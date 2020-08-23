@@ -1,5 +1,6 @@
 package org.fyan102.algorithms;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public interface IStateRepresent {
@@ -8,7 +9,7 @@ public interface IStateRepresent {
      *
      * @return a list of possible operations.
      */
-    public ArrayList operations();
+    public ArrayList<Method> operations();
 
     /**
      * The constraints() function should represent the constraint of the problem.
@@ -22,7 +23,7 @@ public interface IStateRepresent {
      *
      * @return a double value
      */
-    public double heuristics();
+    public double heuristics(IStateRepresent goal);
 
     /**
      * The cost() function represent the cost of the current state
