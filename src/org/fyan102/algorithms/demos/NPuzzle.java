@@ -120,25 +120,8 @@ public class NPuzzle implements IStateRepresent {
         return eq && getNumber() == nPuzzle.getNumber();
     }
 
-    /**
-     * accessor of blank
-     *
-     * @return blank
-     */
-    public Tile getBlank() {
-        return blank;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
     public boolean isGoalState() {
         return goalState.equals(this);
-    }
-
-    public double getHeuristic() {
-        return heuristic;
     }
 
     /**
@@ -148,15 +131,6 @@ public class NPuzzle implements IStateRepresent {
      */
     public int getNumber() {
         return number;
-    }
-
-    /**
-     * accessor of parent
-     *
-     * @return the parent
-     */
-    public NPuzzle getParent() {
-        return parent;
     }
 
     /**
@@ -256,67 +230,19 @@ public class NPuzzle implements IStateRepresent {
     public ArrayList<Action> operations() {
         ArrayList<Action> ops = new ArrayList<>();
         if (blank.x > 0) {
-            ops.add(() -> moveLeft());
+            ops.add(this::moveLeft);
         }
         if (blank.x < number - 1) {
-            ops.add(() -> moveRight());
+            ops.add(this::moveRight);
         }
         if (blank.y > 0) {
-            ops.add(() -> moveUp());
+            ops.add(this::moveUp);
         }
         if (blank.y < number - 1) {
-            ops.add(() -> moveDown());
+            ops.add(this::moveDown);
         }
 
         return ops;
-    }
-
-    /**
-     * mutator of blank
-     *
-     * @param blank the new blank
-     */
-    public void setBlank(Tile blank) {
-        this.blank = blank;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
-
-    public void setGoalState(NPuzzle goalState) {
-        this.goalState = goalState;
-    }
-
-    public void setHeuristic(int heuristic) {
-        this.heuristic = heuristic;
-    }
-
-    /**
-     * mutator of number
-     *
-     * @param number the new number
-     */
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    /**
-     * mutator of parent
-     *
-     * @param parent the new parent
-     */
-    public void setParent(NPuzzle parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * mutator of tiles
-     *
-     * @param tiles the new tiles
-     */
-    public void setTiles(String[][] tiles) {
-        this.tiles = tiles;
     }
 
     /**
@@ -326,10 +252,10 @@ public class NPuzzle implements IStateRepresent {
      */
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer("");
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < number; i++) {
             for (int j = 0; j < number; j++) {
-                buffer.append(tiles[i][j] + " ");
+                buffer.append(tiles[i][j]).append(" ");
             }
             buffer.append("\n");
         }
