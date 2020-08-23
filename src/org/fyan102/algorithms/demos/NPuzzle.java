@@ -19,10 +19,11 @@ import java.util.Objects;
 public class NPuzzle implements IStateRepresent {
     private int number;
     private NPuzzle parent;
+    private NPuzzle goalState;
     private Tile blank;
     private String[][] tiles;
     private int cost;
-    private int heuristic;
+    private double heuristic;
 
     /**
      * The constructor of NPuzzle class
@@ -30,7 +31,7 @@ public class NPuzzle implements IStateRepresent {
      * @param number    the number of rows and columns
      * @param initTiles the initialized tiles should be represented as a String
      */
-    public NPuzzle(int number, String initTiles) {
+    public NPuzzle(int number, String initTiles, NPuzzle goal) {
         this.number = number;
         String[] tileStrings = initTiles.split(" ");
         assert tileStrings.length == number * number;
@@ -47,6 +48,9 @@ public class NPuzzle implements IStateRepresent {
         this.parent = null;
         assert blank != null;
         cost = 0;
+        this.goalState = goal;
+        if (this.goalState != null)
+            heuristic = heuristics();
     }
 
     public NPuzzle(String[][] tiles, NPuzzle parent) {
@@ -60,7 +64,10 @@ public class NPuzzle implements IStateRepresent {
                 }
             }
         }
+        assert blank != null;
+        goalState = parent.goalState;
         cost = parent.cost + (blank.x == 1 && blank.y == 1 ? 4 : 1);
+        heuristic = heuristics();
     }
 
     /**
@@ -71,6 +78,15 @@ public class NPuzzle implements IStateRepresent {
     @Override
     public boolean constraints() {
         return true;
+    }
+
+    private String[][] copyTiles() {
+        String[][] newTiles = new String[number][];
+        for (int i = 0; i < number; i++) {
+            newTiles[i] = new String[number];
+            System.arraycopy(tiles[i], 0, newTiles[i], 0, number);
+        }
+        return newTiles;
     }
 
     /**
@@ -111,6 +127,18 @@ public class NPuzzle implements IStateRepresent {
      */
     public Tile getBlank() {
         return blank;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public boolean isGoalState() {
+        return goalState.equals(this);
+    }
+
+    public double getHeuristic() {
+        return heuristic;
     }
 
     /**
@@ -158,8 +186,7 @@ public class NPuzzle implements IStateRepresent {
      * @return the value of heuristic
      */
     @Override
-    public double heuristics(IStateRepresent goal) {
-        NPuzzle goalState = (NPuzzle) goal;
+    public double heuristics() {
         // HEURISTIC START
         double result = 0;
         for (int i = 0; i < number; i++) {
@@ -178,17 +205,6 @@ public class NPuzzle implements IStateRepresent {
         heuristic = (int) result;
         return result;
         // HEURISTIC END
-    }
-
-    private String[][] copyTiles() {
-        String[][] newTiles = new String[number][];
-        for (int i = 0; i < number; i++) {
-            newTiles[i] = new String[number];
-            for (int j = 0; j < number; j++) {
-                newTiles[i][j] = tiles[i][j];
-            }
-        }
-        return newTiles;
     }
 
     /**
@@ -268,6 +284,18 @@ public class NPuzzle implements IStateRepresent {
         this.blank = blank;
     }
 
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public void setGoalState(NPuzzle goalState) {
+        this.goalState = goalState;
+    }
+
+    public void setHeuristic(int heuristic) {
+        this.heuristic = heuristic;
+    }
+
     /**
      * mutator of number
      *
@@ -309,7 +337,7 @@ public class NPuzzle implements IStateRepresent {
             }
             buffer.append("\n");
         }
-        return buffer.toString() + "g = " + cost + ", h= " + heuristic+"\n";
+        return buffer.toString() + "g = " + cost + ", h= " + heuristic + "\n";
     }
 
     /**

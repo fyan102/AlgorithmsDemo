@@ -4,16 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.PriorityQueue;
 
 public class AStar {
-    public IStateRepresent solve(IStateRepresent initState, IStateRepresent goalState) {
+    public IStateRepresent solve(IStateRepresent initState) {
+        //IStateRepresent goalState = initState.isGoalState();
         PriorityQueue<IStateRepresent> openSet = new PriorityQueue<>(new Comparator<IStateRepresent>() {
             @Override
             public int compare(IStateRepresent iStateRepresent, IStateRepresent t1) {
-                double f1 = iStateRepresent.cost() + iStateRepresent.heuristics(goalState);
-                double f2 = t1.cost() + t1.heuristics(goalState);
+                double f1 = iStateRepresent.cost() + iStateRepresent.heuristics();
+                double f2 = t1.cost() + t1.heuristics();
                 return Double.compare(f1, f2);
             }
         });
@@ -23,7 +23,7 @@ public class AStar {
             IStateRepresent current = openSet.poll();
             System.out.println(current);
             closedSet.add(current);
-            if (current.equals(goalState)) {
+            if (current.isGoalState()) {
                 return current;
             }
             ArrayList<Method> actions = current.operations();
