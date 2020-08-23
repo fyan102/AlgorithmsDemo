@@ -1,8 +1,8 @@
 package org.fyan102.algorithms.demos;
 
+import org.fyan102.algorithms.Action;
 import org.fyan102.algorithms.IStateRepresent;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -188,22 +188,22 @@ public class NPuzzle implements IStateRepresent {
     @Override
     public double heuristics() {
         // HEURISTIC START
-        double result = 0;
+        int heuristic = 0;
         for (int i = 0; i < number; i++) {
             for (int j = 0; j < number; j++) {
                 for (int k = 0; k < number; k++) {
                     for (int m = 0; m < number; m++) {
                         if (!tiles[i][j].equals("B")) {
                             if (tiles[i][j].equals(goalState.tiles[k][m])) {
-                                result += Math.abs(i - k) + Math.abs(j - m);
+                                heuristic += Math.abs(i - k) + Math.abs(j - m);
                             }
                         }
                     }
                 }
             }
         }
-        heuristic = (int) result;
-        return result;
+        this.heuristic =  heuristic;
+        return heuristic;
         // HEURISTIC END
     }
 
@@ -253,25 +253,21 @@ public class NPuzzle implements IStateRepresent {
      * @return a list of all possible operations
      */
     @Override
-    public ArrayList<Method> operations() {
-        ArrayList<Method> ops = new ArrayList<Method>();
-        try {
-            if (blank.x > 0) {
-                ops.add(this.getClass().getMethod("moveLeft"));
-            }
-            if (blank.x < number - 1) {
-                ops.add(this.getClass().getMethod("moveRight"));
-            }
-            if (blank.y > 0) {
-                ops.add(this.getClass().getMethod("moveUp"));
-            }
-            if (blank.y < number - 1) {
-                ops.add(this.getClass().getMethod("moveDown"));
-            }
+    public ArrayList<Action> operations() {
+        ArrayList<Action> ops = new ArrayList<>();
+        if (blank.x > 0) {
+            ops.add(() -> moveLeft());
         }
-        catch (NoSuchMethodException e) {
-            e.printStackTrace();
+        if (blank.x < number - 1) {
+            ops.add(() -> moveRight());
         }
+        if (blank.y > 0) {
+            ops.add(() -> moveUp());
+        }
+        if (blank.y < number - 1) {
+            ops.add(() -> moveDown());
+        }
+
         return ops;
     }
 

@@ -1,5 +1,6 @@
 package org.fyan102.algorithms;
 
+import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,10 +27,9 @@ public class AStar {
             if (current.isGoalState()) {
                 return current;
             }
-            ArrayList<Method> actions = current.operations();
-            for (Method action : actions) {
-                try {
-                    IStateRepresent newState = (IStateRepresent) action.invoke(current);
+            ArrayList<Action> actions = current.operations();
+            for (Action action : actions) {
+                    IStateRepresent newState = (IStateRepresent) (action.method());
                     boolean exist = false;
                     for (IStateRepresent state : closedSet) {
                         if (state.equals(newState)) {
@@ -46,10 +46,7 @@ public class AStar {
                     if (!exist) {
                         openSet.add(newState);
                     }
-                }
-                catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+
             }
         }
         return null;

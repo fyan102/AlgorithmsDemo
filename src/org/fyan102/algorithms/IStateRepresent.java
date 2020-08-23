@@ -1,5 +1,6 @@
 package org.fyan102.algorithms;
 
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ public interface IStateRepresent {
      *
      * @return a list of possible operations.
      */
-    ArrayList<Method> operations();
+    ArrayList<Action> operations();
 
     /**
      * The constraints() function should represent the constraint of the problem.
