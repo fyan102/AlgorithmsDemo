@@ -1,6 +1,6 @@
 package org.fyan102.algorithms;
 
 @FunctionalInterface
-public interface Action {
+public interface IAction {
     IStateRepresent method();
 }

@@ -1,6 +1,6 @@
 package org.fyan102.algorithms.demos;
 
-import org.fyan102.algorithms.Action;
+import org.fyan102.algorithms.IAction;
 import org.fyan102.algorithms.IStateRepresent;
 
 import java.util.ArrayList;
@@ -50,17 +50,17 @@ public class TravellingSalesMan implements IStateRepresent {
     }
 
     @Override
-    public ArrayList<Action> operations() {
-        ArrayList<Action> actions = new ArrayList<>();
+    public ArrayList<IAction> operations() {
+        ArrayList<IAction> IActions = new ArrayList<>();
         for (int i = 0; i < cities.length; i++) {
             if (distances.get(path.charAt(path.length() - 1) + cities[i]) != null &&
                     (path.length() == cities.length && i == 0 ||
                             path.length() != cities.length && !path.contains(cities[i]))) {
                 int finalI = i;
-                actions.add(() -> new TravellingSalesMan(path + cities[finalI], this));
+                IActions.add(() -> new TravellingSalesMan(path + cities[finalI], this));
             }
         }
-        return actions;
+        return IActions;
     }
 
     @Override
@@ -71,24 +71,7 @@ public class TravellingSalesMan implements IStateRepresent {
     @Override
     public double heuristics() {
         // HEURISTIC START
-//        heuristic = 0;
-//        if (path.length() != cities.length + 1) {
-//            for (int i = 0; i < cities.length; i++) {
-//                if (!path.contains(cities[i]) || i == 0) {
-//                    int minDistance = -1;
-//                    for (int j = 0; j < cities.length; j++) {
-//                        Integer distance = distances.get(cities[i] + cities[j]);
-//                        if (distance != null) {
-//                            if (minDistance == -1 || minDistance > distance) {
-//                                minDistance = distance;
-//                            }
-//                        }
-//                    }
-//                    heuristic += minDistance;
-//                }
-//            }
-//        }
-        int h = 0;
+        heuristic = 0;
         if (path.length() != cities.length + 1) {
             ArrayList<String> start = new ArrayList<>();
             ArrayList<String> destination = new ArrayList<>();
@@ -111,11 +94,10 @@ public class TravellingSalesMan implements IStateRepresent {
                         }
                     }
                 }
-                h += minDistance;
+                heuristic += minDistance;
             }
         }
-        heuristic = h;
-        return heuristic;
+        return this.heuristic;
         // HEURISTIC END
     }
 

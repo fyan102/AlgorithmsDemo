@@ -21,7 +21,7 @@ public interface IStateRepresent {
      *
      * @return a list of possible operations.
      */
-    ArrayList<Action> operations();
+    ArrayList<IAction> operations();
 
     /**
      * The constraints() function should represent the constraint of the problem.

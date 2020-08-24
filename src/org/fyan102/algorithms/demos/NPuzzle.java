@@ -1,6 +1,6 @@
 package org.fyan102.algorithms.demos;
 
-import org.fyan102.algorithms.Action;
+import org.fyan102.algorithms.IAction;
 import org.fyan102.algorithms.IStateRepresent;
 
 import java.util.ArrayList;
@@ -227,8 +227,8 @@ public class NPuzzle implements IStateRepresent {
      * @return a list of all possible operations
      */
     @Override
-    public ArrayList<Action> operations() {
-        ArrayList<Action> ops = new ArrayList<>();
+    public ArrayList<IAction> operations() {
+        ArrayList<IAction> ops = new ArrayList<>();
         if (blank.x > 0) {
             ops.add(this::moveLeft);
         }

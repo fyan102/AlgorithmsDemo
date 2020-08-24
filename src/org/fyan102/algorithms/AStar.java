@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class AStar {
+public class AStar implements IGraphSearch{
     public IStateRepresent solve(IStateRepresent initState) {
         //IStateRepresent goalState = initState.isGoalState();
         PriorityQueue<IStateRepresent> openSet = new PriorityQueue<>(new Comparator<IStateRepresent>() {
@@ -24,9 +24,9 @@ public class AStar {
             if (current.isGoalState()) {
                 return current;
             }
-            ArrayList<Action> actions = current.operations();
-            for (Action action : actions) {
-                    IStateRepresent newState = (IStateRepresent) (action.method());
+            ArrayList<IAction> IActions = current.operations();
+            for (IAction IAction : IActions) {
+                    IStateRepresent newState = (IStateRepresent) (IAction.method());
                     boolean exist = false;
                     for (IStateRepresent state : closedSet) {
                         if (state.equals(newState)) {
