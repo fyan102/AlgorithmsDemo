@@ -10,13 +10,13 @@ public class Node {
     private Node parent;
     private List<Node> children;
 
-    public Node(IStateRepresent value) {
+    Node(IStateRepresent value) {
         this.value = value;
         parent = null;
         children = new ArrayList<>();
     }
 
-    public Node(IStateRepresent value, Node parent) {
+    Node(IStateRepresent value, Node parent) {
         this.value = value;
         this.parent = parent;
         children = new ArrayList<>();

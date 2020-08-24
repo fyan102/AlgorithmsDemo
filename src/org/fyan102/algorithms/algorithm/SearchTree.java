@@ -3,14 +3,12 @@ package org.fyan102.algorithms.algorithm;
 import org.fyan102.algorithms.Interfaces.ISearchTree;
 import org.fyan102.algorithms.Interfaces.IStateRepresent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class SearchTree<T extends IStateRepresent> implements ISearchTree {
     private Node root;
 
-    public SearchTree(T rootValue) {
+    SearchTree(T rootValue) {
         this.root = new Node(rootValue);
     }
 
@@ -23,7 +21,7 @@ public class SearchTree<T extends IStateRepresent> implements ISearchTree {
         }
     }
 
-    public Node find(IStateRepresent value) {
+    private Node find(IStateRepresent value) {
         Stack<Node> stack = new Stack<>();
         stack.push(root);
         while (!stack.empty()) {

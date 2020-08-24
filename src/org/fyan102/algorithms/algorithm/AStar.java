@@ -1,14 +1,13 @@
 package org.fyan102.algorithms.algorithm;
 
 import org.fyan102.algorithms.Interfaces.IAction;
-import org.fyan102.algorithms.Interfaces.IGraphSearch;
-import org.fyan102.algorithms.Interfaces.ISearchTree;
+import org.fyan102.algorithms.Interfaces.IGraphSearchSolver;
 import org.fyan102.algorithms.Interfaces.IStateRepresent;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
-public class AStar implements IGraphSearch {
+public class AStar implements IGraphSearchSolver {
     private PriorityQueue<IStateRepresent> openSet;
     private ArrayList<IStateRepresent> closedSet;
     private SearchTree<IStateRepresent> searchTree;
@@ -53,7 +52,8 @@ public class AStar implements IGraphSearch {
         return exist;
     }
 
-    public ISearchTree<IStateRepresent> getSearchTree() {
+    @Override
+    public SearchTree<IStateRepresent> getSearchTree() {
         return searchTree;
     }
 
@@ -79,6 +79,7 @@ public class AStar implements IGraphSearch {
     public IStateRepresent solveOneStep() {
         IStateRepresent current = openSet.poll();
         closedSet.add(current);
+        assert current != null;
         if (current.isGoalState()) {
             return current;
         }

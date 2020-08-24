@@ -48,7 +48,7 @@ public class TravelingSalesMan implements IStateRepresent {
      * @param path   the new path
      * @param parent the parent of the current node
      */
-    public TravelingSalesMan(String path, TravelingSalesMan parent) {
+    private TravelingSalesMan(String path, TravelingSalesMan parent) {
         this.parent = parent;
         this.path = path;
         this.cities = parent.cities;
@@ -120,17 +120,17 @@ public class TravelingSalesMan implements IStateRepresent {
             ArrayList<String> destination = new ArrayList<>();
             start.add(path.substring(path.length() - 1));
             destination.add(cities[0]);
-            for (int i = 0; i < cities.length; i++) {
-                if (!path.contains(cities[i])) {
-                    start.add(cities[i]);
-                    destination.add(cities[i]);
+            for (String city : cities) {
+                if (!path.contains(city)) {
+                    start.add(city);
+                    destination.add(city);
                 }
             }
 
-            for (int i = 0; i < start.size(); i++) {
+            for (String s : start) {
                 int minDistance = -1;
-                for (int j = 0; j < destination.size(); j++) {
-                    Integer distance = distances.get(start.get(i) + destination.get(j));
+                for (String value : destination) {
+                    Integer distance = distances.get(s + value);
                     if (distance != null) {
                         if (minDistance == -1 || minDistance > distance) {
                             minDistance = distance;
@@ -172,12 +172,6 @@ public class TravelingSalesMan implements IStateRepresent {
             }
         }
         return IActions;
-    }
-
-    @Override
-    public void setParent(IStateRepresent parent) {
-        assert parent.getClass().equals(this.getClass());
-        this.parent = (TravelingSalesMan) parent;
     }
 
     /**

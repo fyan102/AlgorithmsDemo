@@ -9,12 +9,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.fyan102.algorithms.Interfaces.IGraphSearch;
+import org.fyan102.algorithms.Interfaces.IGraphSearchSolver;
 import org.fyan102.algorithms.Interfaces.ISearchTree;
 import org.fyan102.algorithms.Interfaces.IStateRepresent;
 import org.fyan102.algorithms.algorithm.AStar;
 import org.fyan102.algorithms.algorithm.Node;
-import org.fyan102.algorithms.demo.NPuzzle;
 import org.fyan102.algorithms.demo.TravelingSalesMan;
 
 public class MainWindow extends Application {
@@ -45,7 +44,7 @@ public class MainWindow extends Application {
 //        IStateRepresent init = new NPuzzle(3, "2 8 3 1 6 4 7 B 5", goal);
         IStateRepresent init = new TravelingSalesMan("A, B, C, D, E",
                 "AB 7, AC 6, AD 10, AE 13, BC 7, BD 10, BE 10, CD 5, CE 9, DE 6");
-        IGraphSearch search = new AStar(init);
+        IGraphSearchSolver solver = new AStar(init);
 
         Button btnSolve = new Button("Solve");
         Button btnSolveStep = new Button("Solve step by step");
@@ -57,8 +56,8 @@ public class MainWindow extends Application {
         final TreeView[] treeView = new TreeView[]{null};
         btnSolve.setOnAction(actionEvent -> {
             vBox.getChildren().remove(treeView[0]);
-            search.solve();
-            treeView[0] = getTreeView(search.getSearchTree());
+            solver.solve();
+            treeView[0] = getTreeView(solver.getSearchTree());
             vBox.getChildren().add(treeView[0]);
         });
         final boolean[] finished = {false};
@@ -70,12 +69,12 @@ public class MainWindow extends Application {
         btnSolveStep.setOnAction(actionEvent -> {
             if (!finished[0]) {
                 if (treeView[0] == null) {
-                    search.reset();
+                    solver.reset();
                 }
                 vBox.getChildren().remove(treeView[0]);
-                IStateRepresent state = search.solveOneStep();
+                IStateRepresent state = solver.solveOneStep();
                 finished[0] = state.isGoalState();
-                treeView[0] = getTreeView(search.getSearchTree());
+                treeView[0] = getTreeView(solver.getSearchTree());
                 vBox.getChildren().add(treeView[0]);
             }
         });

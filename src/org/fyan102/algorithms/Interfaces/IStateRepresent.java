@@ -53,8 +53,6 @@ public interface IStateRepresent {
      */
     ArrayList<IAction> operations();
 
-    void setParent(IStateRepresent parent);
-
     /**
      * The class that implements this interface must implement the toString method
      *

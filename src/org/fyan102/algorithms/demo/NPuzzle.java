@@ -53,7 +53,7 @@ public class NPuzzle implements IStateRepresent {
             heuristic = heuristic();
     }
 
-    public NPuzzle(String[][] tiles, NPuzzle parent) {
+    private NPuzzle(String[][] tiles, NPuzzle parent) {
         this.tiles = tiles;
         this.parent = parent;
         this.number = tiles.length;
@@ -83,9 +83,11 @@ public class NPuzzle implements IStateRepresent {
         NPuzzle nPuzzle = (NPuzzle) o;
         boolean eq = true;
         for (int i = 0; i < number && eq; i++) {
-            for (int j = 0; j < number && eq; j++) {
-                if (!tiles[i][j].equals(((NPuzzle) o).getTiles()[i][j]))
+            for (int j = 0; j < number; j++) {
+                if (!tiles[i][j].equals(((NPuzzle) o).getTiles()[i][j])) {
                     eq = false;
+                    break;
+                }
             }
         }
         return eq && getNumber() == nPuzzle.getNumber();
@@ -156,7 +158,7 @@ public class NPuzzle implements IStateRepresent {
      *
      * @return number
      */
-    public int getNumber() {
+    private int getNumber() {
         return number;
     }
 
@@ -165,7 +167,7 @@ public class NPuzzle implements IStateRepresent {
      *
      * @return tiles
      */
-    public String[][] getTiles() {
+    private String[][] getTiles() {
         return tiles;
     }
 
@@ -185,15 +187,10 @@ public class NPuzzle implements IStateRepresent {
         return goalState.equals(this);
     }
 
-    public void setParent(IStateRepresent parent) {
-        assert parent.getClass().equals(this.getClass());
-        this.parent = (NPuzzle) parent;
-    }
-
     /**
      * move down
      */
-    public NPuzzle moveDown() {
+    private NPuzzle moveDown() {
         String[][] newTiles = copyTiles();
         newTiles[blank.y][blank.x] = newTiles[blank.y + 1][blank.x];
         newTiles[blank.y + 1][blank.x] = "B";
@@ -203,7 +200,7 @@ public class NPuzzle implements IStateRepresent {
     /**
      * move left
      */
-    public NPuzzle moveLeft() {
+    private NPuzzle moveLeft() {
         String[][] newTiles = copyTiles();
         newTiles[blank.y][blank.x] = newTiles[blank.y][blank.x - 1];
         newTiles[blank.y][blank.x - 1] = "B";
@@ -213,7 +210,7 @@ public class NPuzzle implements IStateRepresent {
     /**
      * move right
      */
-    public NPuzzle moveRight() {
+    private NPuzzle moveRight() {
         String[][] newTiles = copyTiles();
         newTiles[blank.y][blank.x] = newTiles[blank.y][blank.x + 1];
         newTiles[blank.y][blank.x + 1] = "B";
@@ -223,7 +220,7 @@ public class NPuzzle implements IStateRepresent {
     /**
      * move up
      */
-    public NPuzzle moveUp() {
+    private NPuzzle moveUp() {
         String[][] newTiles = copyTiles();
         newTiles[blank.y][blank.x] = newTiles[blank.y - 1][blank.x];
         newTiles[blank.y - 1][blank.x] = "B";
@@ -275,7 +272,7 @@ public class NPuzzle implements IStateRepresent {
     /**
      * the Tile class represent the position of a tile
      */
-    private class Tile {
+    private static class Tile {
         private int x;
         private int y;
 
@@ -285,7 +282,7 @@ public class NPuzzle implements IStateRepresent {
          * @param x the x value
          * @param y the y value
          */
-        public Tile(int x, int y) {
+        Tile(int x, int y) {
             this.x = x;
             this.y = y;
         }

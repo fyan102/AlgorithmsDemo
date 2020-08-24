@@ -1,8 +1,6 @@
 package org.fyan102.algorithms.Interfaces;
 
-import org.fyan102.algorithms.algorithm.SearchTree;
-
-public interface IGraphSearch {
+public interface IGraphSearchSolver {
     ISearchTree<IStateRepresent> getSearchTree();
 
     void reset();
