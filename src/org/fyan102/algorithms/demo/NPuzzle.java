@@ -1,7 +1,7 @@
-package org.fyan102.algorithms.demos;
+package org.fyan102.algorithms.demo;
 
-import org.fyan102.algorithms.IAction;
-import org.fyan102.algorithms.IStateRepresent;
+import org.fyan102.algorithms.Interfaces.IAction;
+import org.fyan102.algorithms.Interfaces.IStateRepresent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class NPuzzle implements IStateRepresent {
         cost = 0;
         this.goalState = goal;
         if (this.goalState != null)
-            heuristic = heuristics();
+            heuristic = heuristic();
     }
 
     public NPuzzle(String[][] tiles, NPuzzle parent) {
@@ -67,7 +67,32 @@ public class NPuzzle implements IStateRepresent {
         assert blank != null;
         goalState = parent.goalState;
         cost = parent.cost + (blank.x == 1 && blank.y == 1 ? 4 : 1);
-        heuristic = heuristics();
+        heuristic = heuristic();
+    }
+
+    /**
+     * whether the current state is same as other state
+     *
+     * @param o the other state
+     * @return true if the current state is same as other state, false otherwise
+     */
+    @Override
+    public boolean equals(IStateRepresent o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NPuzzle nPuzzle = (NPuzzle) o;
+        boolean eq = true;
+        for (int i = 0; i < number && eq; i++) {
+            for (int j = 0; j < number && eq; j++) {
+                if (!tiles[i][j].equals(((NPuzzle) o).getTiles()[i][j]))
+                    eq = false;
+            }
+        }
+        return eq && getNumber() == nPuzzle.getNumber();
+    }
+
+    public IStateRepresent getParent() {
+        return parent;
     }
 
     /**
@@ -100,28 +125,30 @@ public class NPuzzle implements IStateRepresent {
     }
 
     /**
-     * whether the current state is same as other state
+     * the heuristic
      *
-     * @param o the other state
-     * @return true if the current state is same as other state, false otherwise
+     * @return the value of heuristic
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NPuzzle nPuzzle = (NPuzzle) o;
-        boolean eq = true;
-        for (int i = 0; i < number && eq; i++) {
-            for (int j = 0; j < number && eq; j++) {
-                if (!tiles[i][j].equals(((NPuzzle) o).getTiles()[i][j]))
-                    eq = false;
+    public double heuristic() {
+        // HEURISTIC START
+        int heuristic = 0;
+        for (int i = 0; i < number; i++) {
+            for (int j = 0; j < number; j++) {
+                for (int k = 0; k < number; k++) {
+                    for (int m = 0; m < number; m++) {
+                        if (!tiles[i][j].equals("B")) {
+                            if (tiles[i][j].equals(goalState.tiles[k][m])) {
+                                heuristic += Math.abs(i - k) + Math.abs(j - m);
+                            }
+                        }
+                    }
+                }
             }
         }
-        return eq && getNumber() == nPuzzle.getNumber();
-    }
-
-    public boolean isGoalState() {
-        return goalState.equals(this);
+        this.heuristic = heuristic;
+        return heuristic;
+        // HEURISTIC END
     }
 
     /**
@@ -154,31 +181,13 @@ public class NPuzzle implements IStateRepresent {
         return result;
     }
 
-    /**
-     * the heuristic
-     *
-     * @return the value of heuristic
-     */
-    @Override
-    public double heuristics() {
-        // HEURISTIC START
-        int heuristic = 0;
-        for (int i = 0; i < number; i++) {
-            for (int j = 0; j < number; j++) {
-                for (int k = 0; k < number; k++) {
-                    for (int m = 0; m < number; m++) {
-                        if (!tiles[i][j].equals("B")) {
-                            if (tiles[i][j].equals(goalState.tiles[k][m])) {
-                                heuristic += Math.abs(i - k) + Math.abs(j - m);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        this.heuristic =  heuristic;
-        return heuristic;
-        // HEURISTIC END
+    public boolean isGoalState() {
+        return goalState.equals(this);
+    }
+
+    public void setParent(IStateRepresent parent) {
+        assert parent.getClass().equals(this.getClass());
+        this.parent = (NPuzzle) parent;
     }
 
     /**
@@ -254,6 +263,7 @@ public class NPuzzle implements IStateRepresent {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < number; i++) {
+
             for (int j = 0; j < number; j++) {
                 buffer.append(tiles[i][j]).append(" ");
             }

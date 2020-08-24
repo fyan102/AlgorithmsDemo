@@ -3,6 +3,9 @@ package org.fyan102.algorithms.ui;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -17,23 +20,8 @@ public class MainWindow extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
-        FXMLLoader loader = new FXMLLoader();
-        try {
-            loader.setLocation(new File("src\\org\\fyan102\\algorithms\\ui\\MainWindow.fxml").toURI().toURL());
-        }
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        VBox vbox = null;
-        try {
-            vbox = loader.<VBox>load();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        Scene scene = new Scene(vbox);
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Algorithms Demo");
+
     }
 }
