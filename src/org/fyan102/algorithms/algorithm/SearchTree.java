@@ -19,7 +19,7 @@ public class SearchTree<T extends IStateRepresent> implements ISearchTree {
         Node parent = find(newState.getParent());
         if (parent != null) {
             Node newNode = new Node(newState, parent);
-            parent.children.add(newNode);
+            parent.getChildren().add(newNode);
         }
     }
 
@@ -28,34 +28,18 @@ public class SearchTree<T extends IStateRepresent> implements ISearchTree {
         stack.push(root);
         while (!stack.empty()) {
             Node current = stack.pop();
-            if (current.value.equals(value)) {
+            if (current.getValue().equals(value)) {
                 return current;
             }
-            for (Node node : current.children) {
+            for (Node node : current.getChildren()) {
                 stack.push(node);
             }
         }
         return null;
     }
 
-    private class Node {
-        private IStateRepresent value;
-        private Node parent;
-        private List<Node> children;
-        private int hierachy;
-
-        public Node(IStateRepresent value) {
-            this.value = value;
-            parent = null;
-            children = new ArrayList<>();
-            hierachy = 0;
-        }
-
-        public Node(IStateRepresent value, Node parent) {
-            this.value = value;
-            this.parent = parent;
-            children = new ArrayList<>();
-            hierachy = parent.hierachy + 1;
-        }
+    @Override
+    public Node getRoot() {
+        return root;
     }
 }
