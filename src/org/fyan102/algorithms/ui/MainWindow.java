@@ -1,8 +1,6 @@
 package org.fyan102.algorithms.ui;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -64,23 +62,20 @@ public class MainWindow extends Application {
         scene.setFill(Color.LIGHTGRAY);
         final TreeView[] treeView = new TreeView[]{null};
         final boolean[] finished = {false};
-        tgProblem.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(ObservableValue<? extends Toggle> observableValue, Toggle toggle, Toggle t1) {
-                RadioButton rb = (RadioButton) tgProblem.getSelectedToggle();
-                if (rb != null) {
-                    if (rb.getText().equals("N Puzzle")) {
-                        init[0] = new NPuzzle(3, "2 8 3 1 6 4 7 B 5",
-                                new NPuzzle(3, "1 2 3 8 B 4 7 6 5", null));
-                        solver[0] = new AStar(init[0]);
-                        finished[0] = false;
-                    }
-                    else if (rb.getText().equals("Traveling Sales Man")) {
-                        init[0] = new TravelingSalesMan("A, B, C, D, E",
-                                "AB 7, AC 6, AD 10, AE 13, BC 7, BD 10, BE 10, CD 5, CE 9, DE 6");
-                        solver[0] = new AStar(init[0]);
-                        finished[0] = false;
-                    }
+        tgProblem.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
+            RadioButton rb = (RadioButton) tgProblem.getSelectedToggle();
+            if (rb != null) {
+                if (rb.getText().equals("N Puzzle")) {
+                    init[0] = new NPuzzle(3, "2 8 3 1 6 4 7 B 5",
+                            new NPuzzle(3, "1 2 3 8 B 4 7 6 5", null));
+                    solver[0] = new AStar(init[0]);
+                    finished[0] = false;
+                }
+                else if (rb.getText().equals("Traveling Sales Man")) {
+                    init[0] = new TravelingSalesMan("A, B, C, D, E",
+                            "AB 7, AC 6, AD 10, AE 13, BC 7, BD 10, BE 10, CD 5, CE 9, DE 6");
+                    solver[0] = new AStar(init[0]);
+                    finished[0] = false;
                 }
             }
         });
