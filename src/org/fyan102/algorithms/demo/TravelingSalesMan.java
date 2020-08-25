@@ -182,8 +182,9 @@ public class TravelingSalesMan implements IStateRepresent {
     @Override
     public String toString() {
         return path + '\n' +
-                "cost=" + cost +
-                ", heuristic=" + heuristic +
+                "g = " + cost +
+                ", h = " + heuristic +
+                ", f = " + (cost + heuristic) +
                 '\n';
     }
 }

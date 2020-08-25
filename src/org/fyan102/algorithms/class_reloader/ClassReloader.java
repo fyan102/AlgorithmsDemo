@@ -1,4 +1,4 @@
-package org.fyan102.algorithms.ui;
+package org.fyan102.algorithms.class_reloader;
 
 import java.io.*;
 

@@ -266,7 +266,9 @@ public class NPuzzle implements IStateRepresent {
             }
             buffer.append("\n");
         }
-        return buffer.toString() + "g = " + cost + ", h= " + heuristic + "\n";
+        return buffer.toString() + "g = " + cost +
+                ", h = " + heuristic +
+                ", f = " + (cost + heuristic) + "\n";
     }
 
     /**
