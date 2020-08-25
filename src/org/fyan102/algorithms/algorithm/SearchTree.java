@@ -1,7 +1,7 @@
 package org.fyan102.algorithms.algorithm;
 
-import org.fyan102.algorithms.Interfaces.ISearchTree;
-import org.fyan102.algorithms.Interfaces.IStateRepresent;
+import org.fyan102.algorithms.interfaces.ISearchTree;
+import org.fyan102.algorithms.interfaces.IStateRepresent;
 
 import java.util.Stack;
 

@@ -1,8 +1,8 @@
 package org.fyan102.algorithms.algorithm;
 
-import org.fyan102.algorithms.Interfaces.IAction;
-import org.fyan102.algorithms.Interfaces.IGraphSearchSolver;
-import org.fyan102.algorithms.Interfaces.IStateRepresent;
+import org.fyan102.algorithms.interfaces.IAction;
+import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
+import org.fyan102.algorithms.interfaces.IStateRepresent;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;

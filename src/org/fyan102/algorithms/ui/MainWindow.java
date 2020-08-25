@@ -9,12 +9,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.fyan102.algorithms.Interfaces.IGraphSearchSolver;
-import org.fyan102.algorithms.Interfaces.ISearchTree;
-import org.fyan102.algorithms.Interfaces.IStateRepresent;
 import org.fyan102.algorithms.algorithm.AStar;
 import org.fyan102.algorithms.algorithm.Node;
 import org.fyan102.algorithms.demo.TravelingSalesMan;
+import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
+import org.fyan102.algorithms.interfaces.ISearchTree;
+import org.fyan102.algorithms.interfaces.IStateRepresent;
 
 public class MainWindow extends Application {
     public static void main(String[] args) {

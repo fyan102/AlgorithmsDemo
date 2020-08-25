@@ -1,9 +1,9 @@
 package org.fyan102.algorithms;
 
-import org.fyan102.algorithms.Interfaces.IGraphSearchSolver;
 import org.fyan102.algorithms.algorithm.AStar;
 import org.fyan102.algorithms.demo.NPuzzle;
 import org.fyan102.algorithms.demo.TravelingSalesMan;
+import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
 
 public class Main {
     public static void main(String[] args) {

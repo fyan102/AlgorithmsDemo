@@ -1,4 +1,4 @@
-package org.fyan102.algorithms.Interfaces;
+package org.fyan102.algorithms.interfaces;
 
 import java.util.ArrayList;
 

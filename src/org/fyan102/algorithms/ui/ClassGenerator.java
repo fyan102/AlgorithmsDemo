@@ -1,30 +1,75 @@
 package org.fyan102.algorithms.ui;
 
-import java.io.*;
+import org.fyan102.algorithms.interfaces.ITest;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 
 public class ClassGenerator {
-    public void generate(String className, String code) {
+    public static void main(String[] args) {
+        new ClassGenerator().test();
+    }
+
+    public void generate(final String className, final String code) {
         try {
-            PrintWriter writer =
-                    new PrintWriter("src\\org\\fyan102\\algorithms\\demos\\" + className + ".java");
+            // write code to file
+            File javaFile = new File("src/" + className.replace(".", "/") + ".java");
+            PrintWriter writer = new PrintWriter(new FileWriter(javaFile));
             writer.print(code);
             writer.close();
-            String[] commands = {"cmd /c javac src\\org\\fyan102\\algorithms\\demos\\" + className + ".java -d " +
-                    "out\\production\\AlgorithmsDemo"};
-            for (String cmd : commands) {
-                Process p = Runtime.getRuntime().exec(cmd);
-                BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line;
-                try {
-                    while ((line = input.readLine()) != null)
-                        System.out.println(line);
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+            // compile the new code
+            File distDir = new File("out/production/AlgorithmsDemo/");
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            int compileResult = compiler.run(null, null, null,
+                    "-d", distDir.getAbsolutePath(), javaFile.getAbsolutePath());
+            if (compileResult != 0) {
+                System.err.println("Failed!!");
+                return;
             }
+            Class.forName(className);
         }
-        catch (IOException e) {
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void test() {
+        String classPath = "out/production/AlgorithmsDemo/";
+        String className = "org.fyan102.algorithms.test.TestClassGenerator";
+        ClassReloader reloaded = new ClassReloader(classPath);
+        try {
+            Class<?> loadClass = reloaded.loadClass(className);
+            ITest test = (ITest) loadClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+            test.setValue(10);
+            System.out.println(test.getValue());
+            String code = "package org.fyan102.algorithms.test;\n" +
+                    "import org.fyan102.algorithms.interfaces.ITest;\n" +
+                    "public class TestClassGenerator implements ITest {\n" +
+                    "\tprivate int value;\n" +
+                    "\tpublic TestClassGenerator(){\n" +
+                    "\t\tvalue=0;\n" +
+                    "\t}\n" +
+                    "\tpublic void setValue(int newValue){\n" +
+                    "\t\tvalue=newValue;\n" +
+                    "\t}\n" +
+                    "\tpublic int getValue(){\n" +
+                    "\t\treturn value;\n" +
+                    "\t}\n" +
+                    "}\n";
+
+            generate(className, code);
+            loadClass = reloaded.findClass(className);
+            test = (ITest) loadClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+            test.setValue(10);
+            System.out.println(test.getValue());
+        }
+        catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

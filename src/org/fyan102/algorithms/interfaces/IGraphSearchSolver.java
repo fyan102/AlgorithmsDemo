@@ -1,4 +1,4 @@
-package org.fyan102.algorithms.Interfaces;
+package org.fyan102.algorithms.interfaces;
 
 public interface IGraphSearchSolver {
     ISearchTree<IStateRepresent> getSearchTree();

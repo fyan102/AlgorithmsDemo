@@ -1,4 +1,4 @@
-package org.fyan102.algorithms.Interfaces;
+package org.fyan102.algorithms.interfaces;
 
 /**
  * The IAction class provide an interface for an action that a state of a problem can take
