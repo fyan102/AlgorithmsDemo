@@ -140,8 +140,19 @@ public class TravelingSalesMan implements IStateRepresent {
                 heuristic += minDistance;
             }
         }
-        return this.heuristic;
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
+        // Just some comments
         // HEURISTIC END
+        return this.heuristic;
     }
 
     /**

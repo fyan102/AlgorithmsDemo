@@ -148,9 +148,10 @@ public class NPuzzle implements IStateRepresent {
                 }
             }
         }
+        // HEURISTIC END
         this.heuristic = heuristic;
         return heuristic;
-        // HEURISTIC END
+
     }
 
     /**

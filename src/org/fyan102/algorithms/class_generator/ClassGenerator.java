@@ -1,4 +1,4 @@
-package org.fyan102.algorithms.class_reloader;
+package org.fyan102.algorithms.class_generator;
 
 import org.fyan102.algorithms.interfaces.ITest;
 
