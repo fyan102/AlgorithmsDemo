@@ -10,6 +10,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.fyan102.algorithms.algorithm.AStar;
+import org.fyan102.algorithms.algorithm.BreadthFirstSearch;
+import org.fyan102.algorithms.algorithm.DepthFirstSearch;
+import org.fyan102.algorithms.algorithm.Dijkstra;
 import org.fyan102.algorithms.data_structure.Node;
 import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
 import org.fyan102.algorithms.interfaces.ISearchTree;
@@ -61,9 +64,9 @@ public class MainWindow extends Application {
      * @param klass the class
      * @return the the state
      */
-    private IStateRepresent generateSampleTsm(Class<?>[] klass) {
+    private IStateRepresent generateSampleTsm(Class<?> klass) {
         try {
-            return (IStateRepresent) klass[0].getConstructor(
+            return (IStateRepresent) klass.getConstructor(
                     new Class[]{String.class, String.class}).
                     newInstance(new Object[]{"A, B, C, D, E",
                             "AB 7, AC 6, AD 10, AE 13, BC 7, BD 10, BE 10, CD 5, CE 9, DE 6"});
@@ -109,18 +112,20 @@ public class MainWindow extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        final String[] className = {"org.fyan102.algorithms.demo.NPuzzle"};
         String classPath = "out/production/AlgorithmsDemo/";
         primaryStage.setTitle("Algorithms Demo");
         ClassReLoader loader = new ClassReLoader(classPath);
-        final IStateRepresent[] init = {null, null};
-        final Class<?>[] loadClass = {null};
-        loadClass[0] = loader.findClass(className[0]);
-        init[0] = generateSampleNPuzzle(loadClass[0]);
-        final IGraphSearchSolver[] solver = {new AStar(init[0])};
-        
+        var variables = new Object() {
+            TreeView<String> treeView = new TreeView<>();
+            boolean finished = false;
+            boolean showHeuristic = true;
+            String className = "org.fyan102.algorithms.demo.NPuzzle";
+            Class<?> problemClass = loader.findClass(className);
+            IStateRepresent init = generateSampleNPuzzle(problemClass);
+            IGraphSearchSolver solver = new AStar(init);
+        };
+    
         BorderPane border = new BorderPane();
-        
         VBox vbLeft = new VBox();
         Label lProblem = new Label("Problems");
         ToggleGroup tgProblem = new ToggleGroup();
@@ -129,100 +134,137 @@ public class MainWindow extends Application {
         RadioButton rbTravelingSalesMan = new RadioButton("Traveling Sales Man");
         rbNPuzzle.setToggleGroup(tgProblem);
         rbTravelingSalesMan.setToggleGroup(tgProblem);
-        
+    
         vbLeft.getChildren().addAll(lProblem, rbNPuzzle, rbTravelingSalesMan);
         vbLeft.setPadding(new Insets(15, 12, 15, 12));
         vbLeft.setStyle("-fx-background-color: #6699CC;");
         vbLeft.setSpacing(10);
         border.setLeft(vbLeft);
-        
-        Label lAlgorithm = new Label("\nAlgorithms");
+    
+        Label lAlgorithm = new Label("Algorithms");
         ToggleGroup tgAlgorithm = new ToggleGroup();
         RadioButton rbAStar = new RadioButton("A*");
+        RadioButton rbBFS = new RadioButton("BFS");
+        RadioButton rbDFS = new RadioButton("DFS");
+        RadioButton rbDijkstra = new RadioButton("Dijkstra");
         rbAStar.setSelected(true);
         rbAStar.setToggleGroup(tgAlgorithm);
-        vbLeft.getChildren().addAll(lAlgorithm, rbAStar);
-        
+        rbBFS.setToggleGroup(tgAlgorithm);
+        rbDFS.setToggleGroup(tgAlgorithm);
+        rbDijkstra.setToggleGroup(tgAlgorithm);
+        TextField tfMaximumDepth = new TextField();
+        vbLeft.getChildren().addAll(lAlgorithm, rbAStar, rbBFS, rbDFS, rbDijkstra, tfMaximumDepth);
+    
         TextArea lHeuristic = new TextArea("Heuristic\n============\n" +
-                new HeuristicGetter().getHeuristic(className[0]));
+                new HeuristicGetter().getHeuristic(variables.className));
         lHeuristic.setEditable(false);
-        lHeuristic.setMinHeight(400);
+        lHeuristic.setMinHeight(300);
         lHeuristic.setMaxWidth(400);
         Button btnHeuristic = new Button("New Heuristic");
         vbLeft.getChildren().addAll(btnHeuristic, lHeuristic);
-        
+    
         Button btnSolve = new Button("Solve");
         Button btnSolveStep = new Button("Solve step by step");
         Button btnClear = new Button("Clear");
         
         VBox vBox = new VBox();
         border.setCenter(vBox);
-        
+    
         HBox hbButtons = new HBox();
         hbButtons.getChildren().addAll(btnSolve, btnSolveStep, btnClear);
         hbButtons.setPadding(new Insets(15, 12, 15, 12));
         hbButtons.setSpacing(10);
         hbButtons.setStyle("-fx-background-color: #336699;");
         border.setTop(hbButtons);
-        
+    
         Scene scene = new Scene(border, 900, 700);
         scene.setFill(Color.LIGHTGRAY);
-        //final TreeView[] treeView = new TreeView[]{null};
-        var treeView = new Object() {
-            TreeView<String> treeView = new TreeView<>();
-        };
-        final boolean[] finished = {false};
+        tfMaximumDepth.textProperty().addListener((observableValue, s, t1) -> {
+            if (variables.solver instanceof DepthFirstSearch) {
+                int maxDepth = 2;
+                try {
+                    maxDepth = Integer.parseInt(tfMaximumDepth.getText());
+                } catch (Exception e) {
+                    new Alert(Alert.AlertType.ERROR, "The depth should be an integer").showAndWait();
+                }
+                ((DepthFirstSearch) variables.solver).setMaximumDepth(maxDepth);
+            }
+        });
         tgProblem.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
             RadioButton rb = (RadioButton) tgProblem.getSelectedToggle();
             if (rb != null) {
                 if (rb.getText().equals("N Puzzle")) {
-                    className[0] = "org.fyan102.algorithms.demo.NPuzzle";
-                    loadClass[0] = loader.findClass(className[0]);
-                    init[0] = generateSampleNPuzzle(loadClass[0]);
-                    solver[0] = new AStar(init[0]);
-                    finished[0] = false;
+                    variables.className = "org.fyan102.algorithms.demo.NPuzzle";
+                    variables.problemClass = loader.findClass(variables.className);
+                    variables.init = generateSampleNPuzzle(variables.problemClass);
+                    variables.solver.setInitState(variables.init);
+                    variables.finished = false;
                     lHeuristic.setText("Heuristic\n============\n" +
                             new HeuristicGetter().getHeuristic("org.fyan102.algorithms.demo.NPuzzle"));
                 } else if (rb.getText().equals("Traveling Sales Man")) {
-                    className[0] = "org.fyan102.algorithms.demo.TravelingSalesMan";
-                    loadClass[0] = loader.findClass(className[0]);
-                    init[0] = generateSampleTsm(loadClass);
-                    solver[0] = new AStar(init[0]);
-                    finished[0] = false;
-                    
+                    variables.className = "org.fyan102.algorithms.demo.TravelingSalesMan";
+                    variables.problemClass = loader.findClass(variables.className);
+                    variables.init = generateSampleTsm(variables.problemClass);
+                    variables.solver.setInitState(variables.init);
+                    variables.finished = false;
                     lHeuristic.setText("Heuristic\n============\n" +
                             new HeuristicGetter().getHeuristic(
                                     "org.fyan102.algorithms.demo.TravelingSalesMan"));
-                    
                 }
+            }
+        });
+        tgAlgorithm.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
+            RadioButton rb = (RadioButton) tgAlgorithm.getSelectedToggle();
+            if (rb != null) {
+                switch (rb.getText()) {
+                    case "A*":
+                        variables.solver = new AStar(variables.init);
+                        break;
+                    case "BFS":
+                        variables.solver = new BreadthFirstSearch(variables.init);
+                        break;
+                    case "DFS":
+                        int depth = 2;
+                        try {
+                            depth = Integer.parseInt(tfMaximumDepth.getText());
+                        } catch (Exception e) {
+                            new Alert(Alert.AlertType.ERROR, "The depth should be an integer").showAndWait();
+                        }
+                        variables.solver = new DepthFirstSearch(variables.init, depth);
+                        break;
+                    case "Dijkstra":
+                        variables.solver = new Dijkstra(variables.init);
+                        break;
+                }
+                variables.finished = false;
             }
         });
         btnSolve.setOnAction(actionEvent -> {
-            vBox.getChildren().remove(treeView.treeView);
-            solver[0].solve();
-            treeView.treeView = getTreeView(solver[0].getSearchTree());
-            vBox.getChildren().add(treeView.treeView);
-            finished[0] = true;
+            vBox.getChildren().remove(variables.treeView);
+            variables.solver.solve();
+            variables.treeView = getTreeView(variables.solver.getSearchTree());
+            vBox.getChildren().add(variables.treeView);
+            variables.finished = true;
         });
         btnClear.setOnAction(actionEvent -> {
-            vBox.getChildren().remove(treeView.treeView);
-            treeView.treeView = null;
-            finished[0] = false;
+            vBox.getChildren().remove(variables.treeView);
+            variables.treeView = null;
+            variables.finished = false;
         });
         btnSolveStep.setOnAction(actionEvent -> {
-            if (!finished[0]) {
-                if (treeView.treeView == null) {
-                    solver[0].reset();
+            if (!variables.finished) {
+                if (variables.treeView == null) {
+                    variables.solver.reset();
                 }
-                vBox.getChildren().remove(treeView.treeView);
-                IStateRepresent state = solver[0].solveOneStep();
-                finished[0] = state.isGoalState();
-                treeView.treeView = getTreeView(solver[0].getSearchTree());
-                vBox.getChildren().add(treeView.treeView);
+                vBox.getChildren().remove(variables.treeView);
+                IStateRepresent state = variables.solver.solveOneStep();
+                variables.finished = state.isGoalState();
+                variables.treeView = getTreeView(variables.solver.getSearchTree());
+                vBox.getChildren().add(variables.treeView);
             }
         });
         btnHeuristic.setOnAction(actionEvent -> {
-            HeuristicDialog aHeuristic = new HeuristicDialog(className[0]);
+            HeuristicDialog aHeuristic = new HeuristicDialog(variables.className);
             aHeuristic.showAndWait();
         });
         primaryStage.setScene(scene);

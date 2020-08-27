@@ -25,6 +25,7 @@ public class NPuzzle implements IStateRepresent {
     private String[][] tiles;
     private int cost;
     private double heuristic;
+    private int depth;
     
     /**
      * The constructor of NPuzzle class
@@ -55,8 +56,9 @@ public class NPuzzle implements IStateRepresent {
         this.goalState = (NPuzzle) goal;
         if (this.goalState != null)
             heuristic = heuristic();
+        depth = 0;
     }
-
+    
     private NPuzzle(String[][] tiles, NPuzzle parent) {
         this.tiles = tiles;
         this.parent = parent;
@@ -72,8 +74,9 @@ public class NPuzzle implements IStateRepresent {
         goalState = parent.goalState;
         cost = parent.cost + (blankX == 1 && blankY == 1 ? 4 : 1);
         heuristic = heuristic();
+        depth = parent.depth + 1;
     }
-
+    
     /**
      * whether the current state is same as other state
      *
@@ -97,6 +100,11 @@ public class NPuzzle implements IStateRepresent {
         return eq && getNumber() == nPuzzle.getNumber();
     }
     
+    @Override
+    public int getDepth() {
+        return depth;
+    }
+    
     public IStateRepresent getParent() {
         return parent;
     }
@@ -118,7 +126,7 @@ public class NPuzzle implements IStateRepresent {
         }
         return newTiles;
     }
-
+    
     /**
      * cost of each operation
      *
@@ -128,7 +136,7 @@ public class NPuzzle implements IStateRepresent {
     public double cost() {
         return cost;
     }
-
+    
     /**
      * the heuristic
      *
@@ -154,9 +162,9 @@ public class NPuzzle implements IStateRepresent {
         // HEURISTIC END
         this.heuristic = heuristic;
         return heuristic;
-
+    
     }
-
+    
     /**
      * accessor of number
      *
@@ -165,7 +173,7 @@ public class NPuzzle implements IStateRepresent {
     private int getNumber() {
         return number;
     }
-
+    
     /**
      * accessor of tiles
      *
@@ -174,7 +182,7 @@ public class NPuzzle implements IStateRepresent {
     private String[][] getTiles() {
         return tiles;
     }
-
+    
     /**
      * the override hashCode method
      *
@@ -186,11 +194,11 @@ public class NPuzzle implements IStateRepresent {
         result = 31 * result + Arrays.hashCode(getTiles());
         return result;
     }
-
+    
     public boolean isGoalState() {
         return goalState.equals(this);
     }
-
+    
     /**
      * move down
      */
@@ -200,7 +208,7 @@ public class NPuzzle implements IStateRepresent {
         newTiles[blankY + 1][blankX] = "B";
         return new NPuzzle(newTiles, this);
     }
-
+    
     /**
      * move left
      */
@@ -210,7 +218,7 @@ public class NPuzzle implements IStateRepresent {
         newTiles[blankY][blankX - 1] = "B";
         return new NPuzzle(newTiles, this);
     }
-
+    
     /**
      * move right
      */
@@ -220,7 +228,7 @@ public class NPuzzle implements IStateRepresent {
         newTiles[blankY][blankX + 1] = "B";
         return new NPuzzle(newTiles, this);
     }
-
+    
     /**
      * move up
      */
@@ -230,7 +238,7 @@ public class NPuzzle implements IStateRepresent {
         newTiles[blankY - 1][blankX] = "B";
         return new NPuzzle(newTiles, this);
     }
-
+    
     /**
      * return the possible operations
      *
@@ -251,10 +259,10 @@ public class NPuzzle implements IStateRepresent {
         if (blankY < number - 1) {
             ops.add(this::moveDown);
         }
-
+    
         return ops;
     }
-
+    
     /**
      * the toString method
      *
@@ -264,7 +272,7 @@ public class NPuzzle implements IStateRepresent {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < number; i++) {
-
+    
             for (int j = 0; j < number; j++) {
                 buffer.append(tiles[i][j]).append(" ");
             }

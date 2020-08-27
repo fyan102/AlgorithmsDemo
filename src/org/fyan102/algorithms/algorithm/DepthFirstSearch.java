@@ -3,38 +3,33 @@ package org.fyan102.algorithms.algorithm;
 import org.fyan102.algorithms.data_structure.SearchTree;
 import org.fyan102.algorithms.interfaces.IAction;
 import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
+import org.fyan102.algorithms.interfaces.ISearchTree;
 import org.fyan102.algorithms.interfaces.IStateRepresent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.PriorityQueue;
+import java.util.List;
+import java.util.Stack;
 
-/**
- * AStar class is an implementation of A Star algorithm
- *
- * @author Fan
- * @version 1.0
- */
-public class AStar implements IGraphSearchSolver {
-    private PriorityQueue<IStateRepresent> openSet;
+public class DepthFirstSearch implements IGraphSearchSolver {
+    private Stack<IStateRepresent> openSet;
     private ArrayList<IStateRepresent> closedSet;
     private SearchTree<IStateRepresent> searchTree;
     private IStateRepresent initState;
+    private int maximumDepth;
     
-    /**
-     * The constructor of AStar class.
-     * Initialize the open set and the closed set
-     */
-    public AStar(IStateRepresent initState) {
-        openSet = new PriorityQueue<>((iStateRepresent, t1) -> {
-            double f1 = iStateRepresent.cost() + iStateRepresent.heuristic();
-            double f2 = t1.cost() + t1.heuristic();
-            return Double.compare(f1, f2);
-        });
+    public DepthFirstSearch(IStateRepresent initState, int maxDepth) {
         this.initState = initState;
-        openSet.add(initState);
+        openSet = new Stack<>();
+        openSet.push(this.initState);
         closedSet = new ArrayList<>();
-        searchTree = new SearchTree<>(initState);
+        searchTree = new SearchTree<>(this.initState);
+        maximumDepth = maxDepth;
+        if (maximumDepth >= 20) {
+            maximumDepth = 20;
+        } else if (maximumDepth <= 2) {
+            maximumDepth = 2;
+        }
     }
     
     @Override
@@ -48,20 +43,16 @@ public class AStar implements IGraphSearchSolver {
     }
     
     @Override
-    public SearchTree<IStateRepresent> getSearchTree() {
+    public ISearchTree<IStateRepresent> getSearchTree() {
         return searchTree;
     }
     
     @Override
     public void reset() {
         openSet.clear();
-        openSet.add(initState);
+        openSet.push(initState);
         closedSet.clear();
         searchTree = new SearchTree<>(initState);
-    }
-    
-    protected void setOpenSet(PriorityQueue<IStateRepresent> newOpenSet) {
-        openSet = newOpenSet;
     }
     
     @Override
@@ -69,17 +60,21 @@ public class AStar implements IGraphSearchSolver {
         this.initState = initState;
     }
     
+    public void setMaximumDepth(int maximumDepth) {
+        this.maximumDepth = maximumDepth;
+    }
+    
     @Override
     public IStateRepresent solveOneStep() {
-        IStateRepresent current = openSet.poll();
+        IStateRepresent current = openSet.pop();
         closedSet.add(current);
         assert current != null;
-        if (current.isGoalState()) {
+        if (current.isGoalState() || current.getDepth() >= maximumDepth) {
             return current;
         }
-        ArrayList<IAction> IActions = current.operations();
-        for (IAction IAction : IActions) {
-            IStateRepresent newState = IAction.method();
+        List<IAction> actions = current.operations();
+        for (int i = actions.size() - 1; i >= 0; i--) {
+            IStateRepresent newState = actions.get(i).method();
             if (notExist(newState)) {
                 openSet.add(newState);
                 searchTree.add(newState);

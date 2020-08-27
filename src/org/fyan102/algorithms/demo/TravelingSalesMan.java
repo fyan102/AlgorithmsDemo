@@ -14,7 +14,8 @@ public class TravelingSalesMan implements IStateRepresent {
     private int cost;
     private double heuristic;
     private TravelingSalesMan parent;
-
+    private int depth;
+    
     /**
      * The constructor for Traveling Sales Man problem representation
      *
@@ -40,8 +41,9 @@ public class TravelingSalesMan implements IStateRepresent {
         path = this.cities[0];
         heuristic = heuristic();
         cost = 0;
+        depth = 0;
     }
-
+    
     /**
      * The second constructor for the traveling sales man problem
      *
@@ -55,6 +57,7 @@ public class TravelingSalesMan implements IStateRepresent {
         this.distances = parent.distances;
         heuristic = heuristic();
         this.cost = parent.cost + distances.get(path.substring(path.length() - 2));
+        depth = parent.depth + 1;
     }
 
 //    /**
@@ -75,7 +78,7 @@ public class TravelingSalesMan implements IStateRepresent {
     public double cost() {
         return cost;
     }
-
+    
     /**
      * Check whether two states are the same
      *
@@ -89,12 +92,17 @@ public class TravelingSalesMan implements IStateRepresent {
         TravelingSalesMan that = (TravelingSalesMan) o;
         return Objects.equals(path, that.path);
     }
-
+    
+    @Override
+    public int getDepth() {
+        return depth;
+    }
+    
     @Override
     public IStateRepresent getParent() {
         return parent;
     }
-
+    
     /**
      * The hashCode method
      *
@@ -104,7 +112,7 @@ public class TravelingSalesMan implements IStateRepresent {
     public int hashCode() {
         return Objects.hash(path);
     }
-
+    
     /**
      * The heuristic method
      *
@@ -125,7 +133,7 @@ public class TravelingSalesMan implements IStateRepresent {
                     destination.add(city);
                 }
             }
-
+    
             for (String s : start) {
                 int minDistance = -1;
                 for (String value : destination) {
@@ -153,7 +161,7 @@ public class TravelingSalesMan implements IStateRepresent {
         // HEURISTIC END
         return this.heuristic;
     }
-
+    
     /**
      * Check whether the current state is the goal state
      *
@@ -164,7 +172,7 @@ public class TravelingSalesMan implements IStateRepresent {
         return path.charAt(0) == path.charAt(path.length() - 1) &&
                 path.length() == cities.length + 1;
     }
-
+    
     /**
      * The operations method will return a list of possible operations
      *
@@ -183,7 +191,7 @@ public class TravelingSalesMan implements IStateRepresent {
         }
         return IActions;
     }
-
+    
     /**
      * The toString method
      *

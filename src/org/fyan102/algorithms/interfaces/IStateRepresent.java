@@ -30,6 +30,8 @@ public interface IStateRepresent {
      */
     boolean equals(IStateRepresent other);
     
+    int getDepth();
+    
     /**
      * getParent() method should return the parent of the current state
      *

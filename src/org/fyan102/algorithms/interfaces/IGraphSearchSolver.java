@@ -1,5 +1,7 @@
 package org.fyan102.algorithms.interfaces;
 
+import java.util.Collection;
+
 /**
  * Any classes that implements the IGraphSearchSolver interface should be able
  * to reset the solver to an initial state, solve the problem, and solve the problem
@@ -23,10 +25,7 @@ public interface IGraphSearchSolver {
      */
     void reset();
     
-    /**
-     * The solve method will take the initial state and solve the problem
-     */
-    void solve();
+    Collection<IStateRepresent> getClosedSet();
     
     /**
      * The solveOneStep method takes the current state and solve the problem by one step
@@ -34,4 +33,39 @@ public interface IGraphSearchSolver {
      * @return the next state of the problem
      */
     IStateRepresent solveOneStep();
+    
+    Collection<IStateRepresent> getOpenSet();
+    
+    default boolean notExist(IStateRepresent newState) {
+        boolean exist = false;
+        for (IStateRepresent state : getClosedSet()) {
+            if (state.equals(newState)) {
+                exist = true;
+                break;
+            }
+        }
+        for (IStateRepresent state : getOpenSet()) {
+            if (state.equals(newState)) {
+                exist = true;
+                break;
+            }
+        }
+        return !exist;
+    }
+    
+    void setInitState(IStateRepresent initState);
+    
+    /**
+     * The solve method will take the initial state and solve the problem
+     */
+    default void solve() {
+        reset();
+        while (!getOpenSet().isEmpty()) {
+            IStateRepresent state = solveOneStep();
+            if (state.isGoalState()) {
+                break;
+            }
+        }
+    }
+    
 }
