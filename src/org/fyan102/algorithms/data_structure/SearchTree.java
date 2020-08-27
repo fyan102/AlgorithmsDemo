@@ -1,4 +1,4 @@
-package org.fyan102.algorithms.algorithm;
+package org.fyan102.algorithms.data_structure;
 
 import org.fyan102.algorithms.interfaces.ISearchTree;
 import org.fyan102.algorithms.interfaces.IStateRepresent;
@@ -8,7 +8,7 @@ import java.util.Stack;
 public class SearchTree<T extends IStateRepresent> implements ISearchTree<IStateRepresent> {
     private Node root;
     
-    SearchTree(T rootValue) {
+    public SearchTree(T rootValue) {
         this.root = new Node(rootValue);
     }
     
@@ -16,7 +16,7 @@ public class SearchTree<T extends IStateRepresent> implements ISearchTree<IState
     public void add(IStateRepresent newState) {
         Node parent = find(newState.getParent());
         if (parent != null) {
-            Node newNode = new Node(newState, parent);
+            Node newNode = new Node(newState);
             parent.getChildren().add(newNode);
         }
     }

@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.fyan102.algorithms.algorithm.AStar;
-import org.fyan102.algorithms.algorithm.Node;
+import org.fyan102.algorithms.data_structure.Node;
 import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
 import org.fyan102.algorithms.interfaces.ISearchTree;
 import org.fyan102.algorithms.interfaces.IStateRepresent;

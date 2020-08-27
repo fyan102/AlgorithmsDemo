@@ -1,6 +1,6 @@
 package org.fyan102.algorithms.interfaces;
 
-import org.fyan102.algorithms.algorithm.Node;
+import org.fyan102.algorithms.data_structure.Node;
 
 /**
  * ISearchTree interface represents a search tree. Classes implements this interface

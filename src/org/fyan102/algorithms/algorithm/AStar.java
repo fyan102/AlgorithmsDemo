@@ -1,5 +1,6 @@
 package org.fyan102.algorithms.algorithm;
 
+import org.fyan102.algorithms.data_structure.SearchTree;
 import org.fyan102.algorithms.interfaces.IAction;
 import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
 import org.fyan102.algorithms.interfaces.IStateRepresent;
