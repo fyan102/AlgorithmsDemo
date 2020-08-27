@@ -6,10 +6,10 @@ import java.util.PriorityQueue;
 
 public class Dijkstra extends AStar {
     /**
-     * The constructor of AStar class.
+     * The constructor of Dijkstra class.
      * Initialize the open set and the closed set
      *
-     * @param initState
+     * @param initState the initial state
      */
     public Dijkstra(IStateRepresent initState) {
         super(initState);

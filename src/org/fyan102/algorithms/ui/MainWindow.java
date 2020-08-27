@@ -118,7 +118,8 @@ public class MainWindow extends Application {
         var variables = new Object() {
             TreeView<String> treeView = new TreeView<>();
             boolean finished = false;
-            boolean showHeuristic = true;
+            //            boolean showHeuristic = true;
+//            boolean showDepth = false;
             String className = "org.fyan102.algorithms.demo.NPuzzle";
             Class<?> problemClass = loader.findClass(className);
             IStateRepresent init = generateSampleNPuzzle(problemClass);

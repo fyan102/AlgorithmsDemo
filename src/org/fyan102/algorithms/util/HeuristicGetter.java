@@ -36,6 +36,8 @@ public class HeuristicGetter {
                         heuristic.append(line).append("\n");
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (IOException e) {
             e.printStackTrace();
