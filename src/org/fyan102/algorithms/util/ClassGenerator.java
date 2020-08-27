@@ -1,4 +1,4 @@
-package org.fyan102.algorithms.class_generator;
+package org.fyan102.algorithms.util;
 
 import org.fyan102.algorithms.interfaces.ITest;
 
@@ -11,9 +11,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
 public class ClassGenerator {
-    public static void main(String[] args) {
-        new ClassGenerator().test();
-    }
 
     public void generate(final String className, final String code) {
         try {
@@ -41,7 +38,7 @@ public class ClassGenerator {
     public void test() {
         String classPath = "out/production/AlgorithmsDemo/";
         String className = "org.fyan102.algorithms.test.TestClassGenerator";
-        ClassReloader reloaded = new ClassReloader(classPath);
+        ClassReLoader reloaded = new ClassReLoader(classPath);
         try {
             Class<?> loadClass = reloaded.loadClass(className);
             ITest test = (ITest) loadClass.getConstructor(new Class[]{Integer.class}).newInstance(new Object[]{5});

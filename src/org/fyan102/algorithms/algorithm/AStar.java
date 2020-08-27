@@ -12,7 +12,7 @@ public class AStar implements IGraphSearchSolver {
     private ArrayList<IStateRepresent> closedSet;
     private SearchTree<IStateRepresent> searchTree;
     private IStateRepresent initState;
-
+    
     /**
      * The constructor of AStar class.
      * Initialize the open set and the closed set
@@ -28,7 +28,7 @@ public class AStar implements IGraphSearchSolver {
         closedSet = new ArrayList<>();
         searchTree = new SearchTree<>(initState);
     }
-
+    
     /**
      * Check whether a new state has already been inside the open set or the closed set
      *
@@ -51,12 +51,12 @@ public class AStar implements IGraphSearchSolver {
         }
         return exist;
     }
-
+    
     @Override
     public SearchTree<IStateRepresent> getSearchTree() {
         return searchTree;
     }
-
+    
     @Override
     public void reset() {
         openSet.clear();
@@ -64,7 +64,7 @@ public class AStar implements IGraphSearchSolver {
         closedSet.clear();
         searchTree = new SearchTree<>(initState);
     }
-
+    
     public void solve() {
         reset();
         while (!openSet.isEmpty()) {
@@ -74,7 +74,7 @@ public class AStar implements IGraphSearchSolver {
             }
         }
     }
-
+    
     @Override
     public IStateRepresent solveOneStep() {
         IStateRepresent current = openSet.poll();

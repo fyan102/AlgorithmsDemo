@@ -11,15 +11,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.fyan102.algorithms.algorithm.AStar;
 import org.fyan102.algorithms.algorithm.Node;
-import org.fyan102.algorithms.class_generator.ClassReloader;
 import org.fyan102.algorithms.interfaces.IGraphSearchSolver;
 import org.fyan102.algorithms.interfaces.ISearchTree;
 import org.fyan102.algorithms.interfaces.IStateRepresent;
+import org.fyan102.algorithms.util.ClassReLoader;
+import org.fyan102.algorithms.util.HeuristicGetter;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Scanner;
 
 public class MainWindow extends Application {
     public static void main(String[] args) {
@@ -59,32 +57,6 @@ public class MainWindow extends Application {
         return null;
     }
     
-    private String getHeuristic(String className) {
-        StringBuilder heuristic = new StringBuilder();
-        try {
-            FileReader reader = new FileReader("src/" +
-                    className.replace(".", "/") + ".java");
-            try (reader; Scanner scanner = new Scanner(reader)) {
-                boolean isHeuristic = false;
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    if (line.contains("HEURISTIC START")) {
-                        isHeuristic = true;
-                        continue;
-                    } else if (line.contains("HEURISTIC END")) {
-                        break;
-                    }
-                    if (isHeuristic) {
-                        heuristic.append(line).append("\n");
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return heuristic.toString();
-    }
-    
     /**
      * The getTreeItem() method convert the result search tree to a tree item
      *
@@ -112,19 +84,15 @@ public class MainWindow extends Application {
         final String[] className = {"org.fyan102.algorithms.demo.NPuzzle"};
         String classPath = "out/production/AlgorithmsDemo/";
         primaryStage.setTitle("Algorithms Demo");
-        ClassReloader reloader = new ClassReloader(classPath);
+        ClassReLoader loader = new ClassReLoader(classPath);
         final IStateRepresent[] init = {null, null};
         final Class<?>[] loadClass = {null};
-        try {
-            loadClass[0] = reloader.findClass(className[0]);
-            init[0] = generateSampleNPuzzle(loadClass[0]);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        loadClass[0] = loader.findClass(className[0]);
+        init[0] = generateSampleNPuzzle(loadClass[0]);
         final IGraphSearchSolver[] solver = {new AStar(init[0])};
-        
+    
         BorderPane border = new BorderPane();
-        
+    
         VBox vbLeft = new VBox();
         Label lProblem = new Label("Problems");
         ToggleGroup tgProblem = new ToggleGroup();
@@ -146,9 +114,9 @@ public class MainWindow extends Application {
         rbAStar.setSelected(true);
         rbAStar.setToggleGroup(tgAlgorithm);
         vbLeft.getChildren().addAll(lAlgorithm, rbAStar);
-        
+    
         TextArea lHeuristic = new TextArea("Heuristic\n============\n" +
-                getHeuristic(className[0]));
+                new HeuristicGetter().getHeuristic(className[0]));
         lHeuristic.setEditable(false);
         lHeuristic.setMinHeight(400);
         lHeuristic.setMaxWidth(400);
@@ -161,75 +129,68 @@ public class MainWindow extends Application {
         
         VBox vBox = new VBox();
         border.setCenter(vBox);
-        
+    
         HBox hbButtons = new HBox();
         hbButtons.getChildren().addAll(btnSolve, btnSolveStep, btnClear);
         hbButtons.setPadding(new Insets(15, 12, 15, 12));
         hbButtons.setSpacing(10);
         hbButtons.setStyle("-fx-background-color: #336699;");
         border.setTop(hbButtons);
-        
+    
         Scene scene = new Scene(border, 900, 700);
         scene.setFill(Color.LIGHTGRAY);
-        
-        final TreeView[] treeView = new TreeView[]{null};
+        //final TreeView[] treeView = new TreeView[]{null};
+        var treeView = new Object() {
+            TreeView<String> treeView = new TreeView<>();
+        };
         final boolean[] finished = {false};
         tgProblem.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
             RadioButton rb = (RadioButton) tgProblem.getSelectedToggle();
             if (rb != null) {
                 if (rb.getText().equals("N Puzzle")) {
                     className[0] = "org.fyan102.algorithms.demo.NPuzzle";
-                    try {
-                        loadClass[0] = reloader.findClass(className[0]);
-                        init[0] = generateSampleNPuzzle(loadClass[0]);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-    
+                    loadClass[0] = loader.findClass(className[0]);
+                    init[0] = generateSampleNPuzzle(loadClass[0]);
                     solver[0] = new AStar(init[0]);
                     finished[0] = false;
                     lHeuristic.setText("Heuristic\n============\n" +
-                            getHeuristic("org.fyan102.algorithms.demo.NPuzzle"));
+                            new HeuristicGetter().getHeuristic("org.fyan102.algorithms.demo.NPuzzle"));
                 } else if (rb.getText().equals("Traveling Sales Man")) {
                     className[0] = "org.fyan102.algorithms.demo.TravelingSalesMan";
-                    try {
-                        loadClass[0] = reloader.findClass(className[0]);
-                        init[0] = generateSampleTsm(loadClass);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-    
+                    loadClass[0] = loader.findClass(className[0]);
+                    init[0] = generateSampleTsm(loadClass);
                     solver[0] = new AStar(init[0]);
                     finished[0] = false;
-    
+                
                     lHeuristic.setText("Heuristic\n============\n" +
-                            getHeuristic("org.fyan102.algorithms.demo.TravelingSalesMan"));
-    
+                            new HeuristicGetter().getHeuristic(
+                                    "org.fyan102.algorithms.demo.TravelingSalesMan"));
+                
                 }
             }
         });
         btnSolve.setOnAction(actionEvent -> {
-            vBox.getChildren().remove(treeView[0]);
+            vBox.getChildren().remove(treeView.treeView);
             solver[0].solve();
-            treeView[0] = getTreeView(solver[0].getSearchTree());
-            vBox.getChildren().add(treeView[0]);
+            treeView.treeView = getTreeView(solver[0].getSearchTree());
+            vBox.getChildren().add(treeView.treeView);
             finished[0] = true;
         });
         btnClear.setOnAction(actionEvent -> {
-            vBox.getChildren().remove(treeView[0]);
-            treeView[0] = null;
+            vBox.getChildren().remove(treeView.treeView);
+            treeView.treeView = null;
             finished[0] = false;
         });
         btnSolveStep.setOnAction(actionEvent -> {
             if (!finished[0]) {
-                if (treeView[0] == null) {
+                if (treeView.treeView == null) {
                     solver[0].reset();
                 }
-                vBox.getChildren().remove(treeView[0]);
+                vBox.getChildren().remove(treeView.treeView);
                 IStateRepresent state = solver[0].solveOneStep();
                 finished[0] = state.isGoalState();
-                treeView[0] = getTreeView(solver[0].getSearchTree());
-                vBox.getChildren().add(treeView[0]);
+                treeView.treeView = getTreeView(solver[0].getSearchTree());
+                vBox.getChildren().add(treeView.treeView);
             }
         });
         btnHeuristic.setOnAction(actionEvent -> {

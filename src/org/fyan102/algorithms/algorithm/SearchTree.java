@@ -5,13 +5,13 @@ import org.fyan102.algorithms.interfaces.IStateRepresent;
 
 import java.util.Stack;
 
-public class SearchTree<T extends IStateRepresent> implements ISearchTree {
+public class SearchTree<T extends IStateRepresent> implements ISearchTree<IStateRepresent> {
     private Node root;
-
+    
     SearchTree(T rootValue) {
         this.root = new Node(rootValue);
     }
-
+    
     @Override
     public void add(IStateRepresent newState) {
         Node parent = find(newState.getParent());
@@ -20,7 +20,7 @@ public class SearchTree<T extends IStateRepresent> implements ISearchTree {
             parent.getChildren().add(newNode);
         }
     }
-
+    
     private Node find(IStateRepresent value) {
         Stack<Node> stack = new Stack<>();
         stack.push(root);
@@ -35,7 +35,7 @@ public class SearchTree<T extends IStateRepresent> implements ISearchTree {
         }
         return null;
     }
-
+    
     @Override
     public Node getRoot() {
         return root;

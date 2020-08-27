@@ -50,7 +50,7 @@ public class NPuzzle implements IStateRepresent {
             }
         }
         this.parent = null;
-        assert blankX != -1 && blankY != -1;
+        assert blankX != -1;
         cost = 0;
         this.goalState = (NPuzzle) goal;
         if (this.goalState != null)
@@ -69,7 +69,6 @@ public class NPuzzle implements IStateRepresent {
                 }
             }
         }
-        assert blankX != -1 && blankY != -1;
         goalState = parent.goalState;
         cost = parent.cost + (blankX == 1 && blankY == 1 ? 4 : 1);
         heuristic = heuristic();
@@ -97,21 +96,20 @@ public class NPuzzle implements IStateRepresent {
         }
         return eq && getNumber() == nPuzzle.getNumber();
     }
-
+    
     public IStateRepresent getParent() {
         return parent;
     }
 
-    /**
-     * The constraint method
-     *
-     * @return true always.
-     */
-    @Override
-    public boolean constraints() {
-        return true;
-    }
-
+//    /**
+//     * The constraint method
+//     *
+//     * @return true always.
+//     */
+//    public boolean constraints() {
+//        return true;
+//    }
+    
     private String[][] copyTiles() {
         String[][] newTiles = new String[number][];
         for (int i = 0; i < number; i++) {

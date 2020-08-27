@@ -57,16 +57,15 @@ public class TravelingSalesMan implements IStateRepresent {
         this.cost = parent.cost + distances.get(path.substring(path.length() - 2));
     }
 
-    /**
-     * The constraints method.
-     *
-     * @return always true
-     */
-    @Override
-    public boolean constraints() {
-        return true;
-    }
-
+//    /**
+//     * The constraints method.
+//     *
+//     * @return always true
+//     */
+//    public boolean constraints() {
+//        return true;
+//    }
+    
     /**
      * The cost of current state
      *
