@@ -1,19 +1,26 @@
 package org.fyan102.algorithms.class_generator;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class ClassReloader extends ClassLoader {
     private String classPath;
-
+    private HashMap<String, Class<?>> classList;
     public ClassReloader(String classPath) {
         super(ClassLoader.getSystemClassLoader());
         this.classPath = classPath;
+        classList = new HashMap<>();
     }
-
+    
     @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        byte[] data = loadClassData(name);
-        return this.defineClass(name, data, 0, data.length);
+    public Class<?> findClass(String name) throws ClassNotFoundException {
+        Class<?> klass = classList.get(name);
+        if (klass == null) {
+            byte[] data = loadClassData(name);
+            klass = this.defineClass(name, data, 0, data.length);
+            classList.put(name, klass);
+        }
+        return klass;
     }
 
     private byte[] loadClassData(String name) {

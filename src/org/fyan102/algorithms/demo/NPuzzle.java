@@ -20,18 +20,21 @@ public class NPuzzle implements IStateRepresent {
     private int number;
     private NPuzzle parent;
     private NPuzzle goalState;
-    private Tile blank;
+    private int blankX;
+    private int blankY;
     private String[][] tiles;
     private int cost;
     private double heuristic;
-
+    
     /**
      * The constructor of NPuzzle class
      *
      * @param number    the number of rows and columns
      * @param initTiles the initialized tiles should be represented as a String
      */
-    public NPuzzle(int number, String initTiles, NPuzzle goal) {
+    public NPuzzle(Integer number, String initTiles, IStateRepresent goal) {
+        blankX = -1;
+        blankY = -1;
         this.number = number;
         String[] tileStrings = initTiles.split(" ");
         assert tileStrings.length == number * number;
@@ -41,14 +44,15 @@ public class NPuzzle implements IStateRepresent {
             for (int j = 0; j < number; j++) {//j: x
                 tiles[i][j] = tileStrings[i * number + j];
                 if (tiles[i][j].equalsIgnoreCase("B")) {
-                    blank = new Tile(j, i);
+                    blankX = j;
+                    blankY = i;
                 }
             }
         }
         this.parent = null;
-        assert blank != null;
+        assert blankX != -1 && blankY != -1;
         cost = 0;
-        this.goalState = goal;
+        this.goalState = (NPuzzle) goal;
         if (this.goalState != null)
             heuristic = heuristic();
     }
@@ -60,13 +64,14 @@ public class NPuzzle implements IStateRepresent {
         for (int i = 0; i < number; i++) { //i: y
             for (int j = 0; j < number; j++) {//j: x
                 if (tiles[i][j].equalsIgnoreCase("B")) {
-                    blank = new Tile(j, i);
+                    blankX = j;
+                    blankY = i;
                 }
             }
         }
-        assert blank != null;
+        assert blankX != -1 && blankY != -1;
         goalState = parent.goalState;
-        cost = parent.cost + (blank.x == 1 && blank.y == 1 ? 4 : 1);
+        cost = parent.cost + (blankX == 1 && blankY == 1 ? 4 : 1);
         heuristic = heuristic();
     }
 
@@ -193,8 +198,8 @@ public class NPuzzle implements IStateRepresent {
      */
     private NPuzzle moveDown() {
         String[][] newTiles = copyTiles();
-        newTiles[blank.y][blank.x] = newTiles[blank.y + 1][blank.x];
-        newTiles[blank.y + 1][blank.x] = "B";
+        newTiles[blankY][blankX] = newTiles[blankY + 1][blankX];
+        newTiles[blankY + 1][blankX] = "B";
         return new NPuzzle(newTiles, this);
     }
 
@@ -203,8 +208,8 @@ public class NPuzzle implements IStateRepresent {
      */
     private NPuzzle moveLeft() {
         String[][] newTiles = copyTiles();
-        newTiles[blank.y][blank.x] = newTiles[blank.y][blank.x - 1];
-        newTiles[blank.y][blank.x - 1] = "B";
+        newTiles[blankY][blankX] = newTiles[blankY][blankX - 1];
+        newTiles[blankY][blankX - 1] = "B";
         return new NPuzzle(newTiles, this);
     }
 
@@ -213,8 +218,8 @@ public class NPuzzle implements IStateRepresent {
      */
     private NPuzzle moveRight() {
         String[][] newTiles = copyTiles();
-        newTiles[blank.y][blank.x] = newTiles[blank.y][blank.x + 1];
-        newTiles[blank.y][blank.x + 1] = "B";
+        newTiles[blankY][blankX] = newTiles[blankY][blankX + 1];
+        newTiles[blankY][blankX + 1] = "B";
         return new NPuzzle(newTiles, this);
     }
 
@@ -223,8 +228,8 @@ public class NPuzzle implements IStateRepresent {
      */
     private NPuzzle moveUp() {
         String[][] newTiles = copyTiles();
-        newTiles[blank.y][blank.x] = newTiles[blank.y - 1][blank.x];
-        newTiles[blank.y - 1][blank.x] = "B";
+        newTiles[blankY][blankX] = newTiles[blankY - 1][blankX];
+        newTiles[blankY - 1][blankX] = "B";
         return new NPuzzle(newTiles, this);
     }
 
@@ -236,16 +241,16 @@ public class NPuzzle implements IStateRepresent {
     @Override
     public ArrayList<IAction> operations() {
         ArrayList<IAction> ops = new ArrayList<>();
-        if (blank.x > 0) {
+        if (blankX > 0) {
             ops.add(this::moveLeft);
         }
-        if (blank.x < number - 1) {
+        if (blankX < number - 1) {
             ops.add(this::moveRight);
         }
-        if (blank.y > 0) {
+        if (blankY > 0) {
             ops.add(this::moveUp);
         }
-        if (blank.y < number - 1) {
+        if (blankY < number - 1) {
             ops.add(this::moveDown);
         }
 
@@ -270,24 +275,5 @@ public class NPuzzle implements IStateRepresent {
         return buffer.toString() + "g = " + cost +
                 ", h = " + heuristic +
                 ", f = " + (cost + heuristic) + "\n";
-    }
-
-    /**
-     * the Tile class represent the position of a tile
-     */
-    private static class Tile {
-        private int x;
-        private int y;
-
-        /**
-         * constructor
-         *
-         * @param x the x value
-         * @param y the y value
-         */
-        Tile(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
     }
 }

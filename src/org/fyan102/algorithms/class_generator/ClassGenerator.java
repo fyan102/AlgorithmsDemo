@@ -44,7 +44,7 @@ public class ClassGenerator {
         ClassReloader reloaded = new ClassReloader(classPath);
         try {
             Class<?> loadClass = reloaded.loadClass(className);
-            ITest test = (ITest) loadClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+            ITest test = (ITest) loadClass.getConstructor(new Class[]{Integer.class}).newInstance(new Object[]{5});
             test.setValue(10);
             System.out.println(test.getValue());
             String code = "package org.fyan102.algorithms.test;\n" +
