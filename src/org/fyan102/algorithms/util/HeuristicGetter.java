@@ -4,7 +4,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * The HeuristicGetter class is used for getting the heuristic from one class
+ *
+ * @author Fan
+ * @version 1.0
+ */
 public class HeuristicGetter {
+    /**
+     * getHeuristic() method is used for getting the code for the heuristic from one class
+     *
+     * @param className the full class name (include the packages)
+     * @return the code for heuristic function.
+     */
     public String getHeuristic(String className) {
         StringBuilder heuristic = new StringBuilder();
         try {

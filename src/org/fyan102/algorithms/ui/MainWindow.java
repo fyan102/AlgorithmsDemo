@@ -19,7 +19,18 @@ import org.fyan102.algorithms.util.HeuristicGetter;
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * The main window of the application
+ *
+ * @author Fan
+ * @version 1.0
+ */
 public class MainWindow extends Application {
+    /**
+     * The main() method
+     *
+     * @param args arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
@@ -44,9 +55,15 @@ public class MainWindow extends Application {
         return null;
     }
     
-    private IStateRepresent generateSampleTsm(Class<?>[] loadClass) {
+    /**
+     * generate a sample traveling salesman problem
+     *
+     * @param klass the class
+     * @return the the state
+     */
+    private IStateRepresent generateSampleTsm(Class<?>[] klass) {
         try {
-            return (IStateRepresent) loadClass[0].getConstructor(
+            return (IStateRepresent) klass[0].getConstructor(
                     new Class[]{String.class, String.class}).
                     newInstance(new Object[]{"A, B, C, D, E",
                             "AB 7, AC 6, AD 10, AE 13, BC 7, BD 10, BE 10, CD 5, CE 9, DE 6"});
@@ -72,6 +89,12 @@ public class MainWindow extends Application {
         return treeItem;
     }
     
+    /**
+     * get the tree view of the result
+     *
+     * @param result the result of the searching algorithm
+     * @return the tree view
+     */
     private TreeView<String> getTreeView(ISearchTree<IStateRepresent> result) {
         TreeItem<String> tree = getTreeItem(result.getRoot());
         TreeView<String> treeView = new TreeView<>(tree);
@@ -79,6 +102,11 @@ public class MainWindow extends Application {
         return treeView;
     }
     
+    /**
+     * start the ui
+     *
+     * @param primaryStage the stage
+     */
     @Override
     public void start(Stage primaryStage) {
         final String[] className = {"org.fyan102.algorithms.demo.NPuzzle"};
@@ -90,9 +118,9 @@ public class MainWindow extends Application {
         loadClass[0] = loader.findClass(className[0]);
         init[0] = generateSampleNPuzzle(loadClass[0]);
         final IGraphSearchSolver[] solver = {new AStar(init[0])};
-    
+        
         BorderPane border = new BorderPane();
-    
+        
         VBox vbLeft = new VBox();
         Label lProblem = new Label("Problems");
         ToggleGroup tgProblem = new ToggleGroup();
@@ -114,7 +142,7 @@ public class MainWindow extends Application {
         rbAStar.setSelected(true);
         rbAStar.setToggleGroup(tgAlgorithm);
         vbLeft.getChildren().addAll(lAlgorithm, rbAStar);
-    
+        
         TextArea lHeuristic = new TextArea("Heuristic\n============\n" +
                 new HeuristicGetter().getHeuristic(className[0]));
         lHeuristic.setEditable(false);
@@ -129,14 +157,14 @@ public class MainWindow extends Application {
         
         VBox vBox = new VBox();
         border.setCenter(vBox);
-    
+        
         HBox hbButtons = new HBox();
         hbButtons.getChildren().addAll(btnSolve, btnSolveStep, btnClear);
         hbButtons.setPadding(new Insets(15, 12, 15, 12));
         hbButtons.setSpacing(10);
         hbButtons.setStyle("-fx-background-color: #336699;");
         border.setTop(hbButtons);
-    
+        
         Scene scene = new Scene(border, 900, 700);
         scene.setFill(Color.LIGHTGRAY);
         //final TreeView[] treeView = new TreeView[]{null};
@@ -161,11 +189,11 @@ public class MainWindow extends Application {
                     init[0] = generateSampleTsm(loadClass);
                     solver[0] = new AStar(init[0]);
                     finished[0] = false;
-                
+                    
                     lHeuristic.setText("Heuristic\n============\n" +
                             new HeuristicGetter().getHeuristic(
                                     "org.fyan102.algorithms.demo.TravelingSalesMan"));
-                
+                    
                 }
             }
         });

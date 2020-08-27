@@ -8,6 +8,12 @@ import org.fyan102.algorithms.interfaces.IStateRepresent;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
+/**
+ * AStar class is an implementation of A Star algorithm
+ *
+ * @author Fan
+ * @version 1.0
+ */
 public class AStar implements IGraphSearchSolver {
     private PriorityQueue<IStateRepresent> openSet;
     private ArrayList<IStateRepresent> closedSet;

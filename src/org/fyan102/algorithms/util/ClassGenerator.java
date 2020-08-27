@@ -1,17 +1,25 @@
 package org.fyan102.algorithms.util;
 
-import org.fyan102.algorithms.interfaces.ITest;
-
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 
+/**
+ * The ClassGenerator class is used for generate a class
+ *
+ * @author Fan
+ * @version 1.0
+ */
 public class ClassGenerator {
-
+    /**
+     * generate the class using the code
+     *
+     * @param className the class name (including the packages)
+     * @param code      the code
+     */
     public void generate(final String className, final String code) {
         try {
             // write code to file
@@ -29,13 +37,12 @@ public class ClassGenerator {
                 return;
             }
             Class.forName(className);
-        }
-        catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void test() {
+    /*public void test() {
         String classPath = "out/production/AlgorithmsDemo/";
         String className = "org.fyan102.algorithms.test.TestClassGenerator";
         ClassReLoader reloaded = new ClassReLoader(classPath);
@@ -69,5 +76,5 @@ public class ClassGenerator {
                 InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
