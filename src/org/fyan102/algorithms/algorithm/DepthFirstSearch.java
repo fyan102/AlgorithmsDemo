@@ -17,7 +17,7 @@ public class DepthFirstSearch implements IGraphSearchSolver {
     private SearchTree<IStateRepresent> searchTree;
     private IStateRepresent initState;
     private int maximumDepth;
-    
+
     public DepthFirstSearch(IStateRepresent initState, int maxDepth) {
         this.initState = initState;
         openSet = new Stack<>();
@@ -31,22 +31,22 @@ public class DepthFirstSearch implements IGraphSearchSolver {
             maximumDepth = 2;
         }
     }
-    
+
     @Override
     public Collection<IStateRepresent> getClosedSet() {
         return closedSet;
     }
-    
+
     @Override
     public Collection<IStateRepresent> getOpenSet() {
         return openSet;
     }
-    
+
     @Override
     public ISearchTree<IStateRepresent> getSearchTree() {
         return searchTree;
     }
-    
+
     @Override
     public void reset() {
         openSet.clear();
@@ -54,16 +54,16 @@ public class DepthFirstSearch implements IGraphSearchSolver {
         closedSet.clear();
         searchTree = new SearchTree<>(initState);
     }
-    
+
     @Override
     public void setInitState(IStateRepresent initState) {
         this.initState = initState;
     }
-    
+
     public void setMaximumDepth(int maximumDepth) {
         this.maximumDepth = maximumDepth;
     }
-    
+
     @Override
     public IStateRepresent solveOneStep() {
         IStateRepresent current = openSet.pop();

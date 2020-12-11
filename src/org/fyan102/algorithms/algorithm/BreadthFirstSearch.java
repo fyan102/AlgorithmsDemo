@@ -14,7 +14,7 @@ public class BreadthFirstSearch implements IGraphSearchSolver {
     private ArrayList<IStateRepresent> closedSet;
     private SearchTree<IStateRepresent> searchTree;
     private IStateRepresent initState;
-    
+
     public BreadthFirstSearch(IStateRepresent initState) {
         this.initState = initState;
         openSet = new ArrayList<>();
@@ -22,12 +22,15 @@ public class BreadthFirstSearch implements IGraphSearchSolver {
         closedSet = new ArrayList<>();
         searchTree = new SearchTree<>(this.initState);
     }
-    
+
+    /**
+     * @return the closed set
+     */
     @Override
     public Collection<IStateRepresent> getClosedSet() {
         return closedSet;
     }
-    
+
     @Override
     public Collection<IStateRepresent> getOpenSet() {
         return openSet;
@@ -37,7 +40,7 @@ public class BreadthFirstSearch implements IGraphSearchSolver {
     public ISearchTree<IStateRepresent> getSearchTree() {
         return searchTree;
     }
-    
+
     @Override
     public void reset() {
         openSet.clear();
@@ -45,7 +48,7 @@ public class BreadthFirstSearch implements IGraphSearchSolver {
         closedSet.clear();
         searchTree = new SearchTree<>(this.initState);
     }
-    
+
     @Override
     public void setInitState(IStateRepresent initState) {
         this.initState = initState;
