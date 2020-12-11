@@ -9,7 +9,7 @@ public class Node {
     private IStateRepresent value;
     private List<Node> children;
 
-    Node(IStateRepresent value) {
+    public Node(IStateRepresent value) {
         this.value = value;
         children = new ArrayList<>();
     }
