@@ -17,7 +17,7 @@ public class BreadthFirstSearch implements IGraphSearchSolver {
 
     public BreadthFirstSearch(IStateRepresent initState) {
         this.initState = initState;
-        openSet = new ArrayList<>();
+        openSet = new java.util.ArrayList<>();
         openSet.add(this.initState);
         closedSet = new ArrayList<>();
         searchTree = new SearchTree<>(this.initState);
