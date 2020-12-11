@@ -259,7 +259,6 @@ public class NPuzzle implements IStateRepresent {
         if (blankY < number - 1) {
             ops.add(this::moveDown);
         }
-    
         return ops;
     }
     
