@@ -1,3 +1,7 @@
 .idea/
 out/
 lib/
+.vscode/
+.gradle/
+.DS_Store
+build/

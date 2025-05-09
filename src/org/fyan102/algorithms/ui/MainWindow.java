@@ -112,7 +112,7 @@ public class MainWindow extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        String classPath = "out/production/AlgorithmsDemo/";
+        String classPath = "build/classes/java/main/";
         primaryStage.setTitle("Algorithms Demo");
         ClassReLoader loader = new ClassReLoader(classPath);
         var variables = new Object() {
