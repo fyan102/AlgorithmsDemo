@@ -2,12 +2,14 @@ package org.fyan102.algorithms.ui;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.fyan102.algorithms.algorithm.AStar;
 import org.fyan102.algorithms.algorithm.BreadthFirstSearch;
@@ -21,6 +23,8 @@ import org.fyan102.algorithms.util.ClassReLoader;
 import org.fyan102.algorithms.util.HeuristicGetter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The main window of the application
@@ -29,6 +33,76 @@ import java.lang.reflect.InvocationTargetException;
  * @version 1.0
  */
 public class MainWindow extends Application {
+    // Theme definitions
+    private static class Theme {
+        final String background;
+        final String accent;
+        final String text;
+        final String button;
+        final String hover;
+
+        Theme(String background, String accent, String text, String button, String hover) {
+            this.background = background;
+            this.accent = accent;
+            this.text = text;
+            this.button = button;
+            this.hover = hover;
+        }
+    }
+
+    private static final Map<String, Theme> THEMES = new HashMap<>();
+    static {
+        // Light Theme - Soft white background with subtle gray accents
+        THEMES.put("Light", new Theme(
+            "#F8F9FA",  // Soft white background
+            "#E9ECEF",  // Light gray accent
+            "#1A1A1A",  // Almost black text for better contrast
+            "#6C757D",  // Medium gray buttons
+            "#495057"   // Darker gray hover
+        ));
+
+        // Dark Theme - Deep dark background with subtle highlights
+        THEMES.put("Dark", new Theme(
+            "#212529",  // Dark background
+            "#343A40",  // Slightly lighter dark accent
+            "#FFFFFF",  // Pure white text for maximum contrast
+            "#495057",  // Medium gray buttons
+            "#6C757D"   // Lighter gray hover
+        ));
+
+        // Blue Theme - Professional blue tones
+        THEMES.put("Blue", new Theme(
+            "#E7F5FF",  // Very light blue background
+            "#D0EBFF",  // Light blue accent
+            "#0A3D62",  // Deep navy text for better readability
+            "#339AF0",  // Medium blue buttons
+            "#228BE6"   // Slightly darker blue hover
+        ));
+
+        // Pink Theme - Soft pink tones
+        THEMES.put("Pink", new Theme(
+            "#FFF0F6",  // Very light pink background
+            "#FFE3F3",  // Light pink accent
+            "#862E9C",  // Deep purple text for better contrast
+            "#E64980",  // Medium pink buttons
+            "#D6336C"   // Slightly darker pink hover
+        ));
+    }
+
+    private String currentTheme = "Light";  // Changed default theme to Light
+    private Theme theme = THEMES.get(currentTheme);
+    private BorderPane border;
+    private VBox vbLeft;
+    private HBox hbButtons;
+    private VBox vBox;
+
+    // Modern Dark Theme with Purple Accents
+    private static final String BACKGROUND_COLOR = "#1A1A2E";  // Deep navy
+    private static final String ACCENT_COLOR = "#6C63FF";      // Bright purple
+    private static final String TEXT_COLOR = "#E6E6E6";        // Soft white
+    private static final String BUTTON_COLOR = "#4A4AFF";      // Royal blue
+    private static final String HOVER_COLOR = "#8B7FFF";       // Light purple
+
     /**
      * The main() method
      *
@@ -102,7 +176,60 @@ public class MainWindow extends Application {
         TreeItem<String> tree = getTreeItem(result.getRoot());
         TreeView<String> treeView = new TreeView<>(tree);
         treeView.setMinHeight(600);
+        treeView.setStyle("-fx-background-color: " + BACKGROUND_COLOR + "; " +
+                         "-fx-text-fill: " + TEXT_COLOR + "; " +
+                         "-fx-font-size: 14px;");
         return treeView;
+    }
+    
+    private void applyTheme() {
+        theme = THEMES.get(currentTheme);
+        if (border != null) {
+            border.setStyle("-fx-background-color: " + theme.background + ";");
+        }
+        if (vbLeft != null) {
+            vbLeft.setStyle("-fx-background-color: " + theme.accent + "; " +
+                           "-fx-background-radius: 10; " +
+                           "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+        }
+        if (vBox != null) {
+            vBox.setStyle("-fx-background-color: " + theme.background + ";");
+        }
+    }
+    
+    private Button createStyledButton(String text) {
+        Button button = new Button(text);
+        button.setStyle("-fx-background-color: " + theme.button + "; " +
+                       "-fx-text-fill: " + theme.text + "; " +
+                       "-fx-font-size: 14px; " +
+                       "-fx-padding: 10 20; " +
+                       "-fx-background-radius: 5;");
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: " + theme.hover + "; " +
+                                                    "-fx-text-fill: " + theme.text + "; " +
+                                                    "-fx-font-size: 14px; " +
+                                                    "-fx-padding: 10 20; " +
+                                                    "-fx-background-radius: 5;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: " + theme.button + "; " +
+                                                   "-fx-text-fill: " + theme.text + "; " +
+                                                   "-fx-font-size: 14px; " +
+                                                   "-fx-padding: 10 20; " +
+                                                   "-fx-background-radius: 5;"));
+        return button;
+    }
+    
+    private RadioButton createStyledRadioButton(String text) {
+        RadioButton radioButton = new RadioButton(text);
+        radioButton.setStyle("-fx-text-fill: " + theme.text + "; " +
+                           "-fx-font-size: 14px;");
+        return radioButton;
+    }
+    
+    private Label createStyledLabel(String text) {
+        Label label = new Label(text);
+        label.setStyle("-fx-text-fill: " + theme.text + "; " +
+                      "-fx-font-size: 16px; " +
+                      "-fx-font-weight: bold;");
+        return label;
     }
     
     /**
@@ -113,73 +240,139 @@ public class MainWindow extends Application {
     @Override
     public void start(Stage primaryStage) {
         String classPath = "build/classes/java/main/";
-        primaryStage.setTitle("Algorithms Demo");
+        primaryStage.setTitle("SearchVista");
+        
+        // Set the program icon
+        Group icon = ProgramIcon.createIcon(32);
+        primaryStage.getIcons().add(icon.snapshot(null, null));
+        
         ClassReLoader loader = new ClassReLoader(classPath);
         var variables = new Object() {
             TreeView<String> treeView = new TreeView<>();
             boolean finished = false;
-            //            boolean showHeuristic = true;
-//            boolean showDepth = false;
             String className = "org.fyan102.algorithms.demo.NPuzzle";
             Class<?> problemClass = loader.findClass(className);
             IStateRepresent init = generateSampleNPuzzle(problemClass);
             IGraphSearchSolver solver = new AStar(init);
         };
-    
-        BorderPane border = new BorderPane();
-        VBox vbLeft = new VBox();
-        Label lProblem = new Label("Problems");
+
+        // Initialize the main container
+        border = new BorderPane();
+        
+        // Create menu bar with improved styling
+        MenuBar menuBar = new MenuBar();
+        menuBar.setStyle("-fx-background-color: " + theme.accent + "; " +
+                        "-fx-padding: 5;");
+        
+        Menu themeMenu = new Menu("Theme");
+        themeMenu.setStyle("-fx-text-fill: " + theme.text + "; " +
+                          "-fx-font-size: 14px;");
+        
+        ToggleGroup themeGroup = new ToggleGroup();
+        
+        for (String themeName : THEMES.keySet()) {
+            RadioMenuItem themeItem = new RadioMenuItem(themeName);
+            themeItem.setStyle("-fx-text-fill: " + theme.text + "; " +
+                             "-fx-font-size: 14px;");
+            themeItem.setToggleGroup(themeGroup);
+            themeItem.setSelected(themeName.equals(currentTheme));
+            themeItem.setOnAction(e -> {
+                currentTheme = themeName;
+                applyTheme();
+                // Update menu bar style after theme change
+                menuBar.setStyle("-fx-background-color: " + theme.accent + "; " +
+                               "-fx-padding: 5;");
+                themeMenu.setStyle("-fx-text-fill: " + theme.text + "; " +
+                                 "-fx-font-size: 14px;");
+                for (MenuItem item : themeMenu.getItems()) {
+                    item.setStyle("-fx-text-fill: " + theme.text + "; " +
+                                "-fx-font-size: 14px;");
+                }
+            });
+            themeMenu.getItems().add(themeItem);
+        }
+        
+        menuBar.getMenus().add(themeMenu);
+        
+        // Create a container for the menu bar to ensure it's visible
+        VBox topContainer = new VBox();
+        topContainer.getChildren().add(menuBar);
+        border.setTop(topContainer);
+
+        // Initialize all UI components
+        vbLeft = new VBox(15);
+        vbLeft.setPadding(new Insets(20));
+
+        Label lProblem = createStyledLabel("Problems");
         ToggleGroup tgProblem = new ToggleGroup();
-        RadioButton rbNPuzzle = new RadioButton("N Puzzle");
+        RadioButton rbNPuzzle = createStyledRadioButton("N Puzzle");
+        RadioButton rbTravelingSalesMan = createStyledRadioButton("Traveling Sales Man");
         rbNPuzzle.setSelected(true);
-        RadioButton rbTravelingSalesMan = new RadioButton("Traveling Sales Man");
         rbNPuzzle.setToggleGroup(tgProblem);
         rbTravelingSalesMan.setToggleGroup(tgProblem);
-    
-        vbLeft.getChildren().addAll(lProblem, rbNPuzzle, rbTravelingSalesMan);
-        vbLeft.setPadding(new Insets(15, 12, 15, 12));
-        vbLeft.setStyle("-fx-background-color: #6699CC;");
-        vbLeft.setSpacing(10);
-        border.setLeft(vbLeft);
-    
-        Label lAlgorithm = new Label("Algorithms");
+
+        Label lAlgorithm = createStyledLabel("Algorithms");
         ToggleGroup tgAlgorithm = new ToggleGroup();
-        RadioButton rbAStar = new RadioButton("A*");
-        RadioButton rbBFS = new RadioButton("BFS");
-        RadioButton rbDFS = new RadioButton("DFS");
-        RadioButton rbDijkstra = new RadioButton("Dijkstra");
+        RadioButton rbAStar = createStyledRadioButton("A*");
+        RadioButton rbBFS = createStyledRadioButton("BFS");
+        RadioButton rbDFS = createStyledRadioButton("DFS");
+        RadioButton rbDijkstra = createStyledRadioButton("Dijkstra");
         rbAStar.setSelected(true);
         rbAStar.setToggleGroup(tgAlgorithm);
         rbBFS.setToggleGroup(tgAlgorithm);
         rbDFS.setToggleGroup(tgAlgorithm);
         rbDijkstra.setToggleGroup(tgAlgorithm);
+
         TextField tfMaximumDepth = new TextField();
-        vbLeft.getChildren().addAll(lAlgorithm, rbAStar, rbBFS, rbDFS, rbDijkstra, tfMaximumDepth);
-    
+        tfMaximumDepth.setPromptText("Maximum Depth");
+        tfMaximumDepth.setStyle("-fx-background-color: " + theme.text + "; " +
+                               "-fx-text-fill: " + theme.background + "; " +
+                               "-fx-font-size: 14px; " +
+                               "-fx-padding: 8; " +
+                               "-fx-background-radius: 5;");
+
         TextArea lHeuristic = new TextArea("Heuristic\n============\n" +
                 new HeuristicGetter().getHeuristic(variables.className));
         lHeuristic.setEditable(false);
         lHeuristic.setMinHeight(300);
         lHeuristic.setMaxWidth(400);
-        Button btnHeuristic = new Button("New Heuristic");
-        vbLeft.getChildren().addAll(btnHeuristic, lHeuristic);
-    
-        Button btnSolve = new Button("Solve");
-        Button btnSolveStep = new Button("Solve step by step");
-        Button btnClear = new Button("Clear");
-        
-        VBox vBox = new VBox();
+        lHeuristic.setStyle("-fx-background-color: " + theme.accent + "; " +
+                           "-fx-text-fill: " + theme.text + "; " +
+                           "-fx-font-size: 14px; " +
+                           "-fx-background-radius: 5;");
+
+        Button btnHeuristic = createStyledButton("New Heuristic");
+        vbLeft.getChildren().addAll(lProblem, rbNPuzzle, rbTravelingSalesMan, 
+                                  new Separator(), lAlgorithm, rbAStar, rbBFS, rbDFS, rbDijkstra,
+                                  tfMaximumDepth, new Separator(), btnHeuristic, lHeuristic);
+        border.setLeft(vbLeft);
+
+        // Center Panel
+        vBox = new VBox(10);
+        vBox.setPadding(new Insets(20));
         border.setCenter(vBox);
-    
-        HBox hbButtons = new HBox();
-        hbButtons.getChildren().addAll(btnSolve, btnSolveStep, btnClear);
-        hbButtons.setPadding(new Insets(15, 12, 15, 12));
-        hbButtons.setSpacing(10);
-        hbButtons.setStyle("-fx-background-color: #336699;");
-        border.setTop(hbButtons);
-    
-        Scene scene = new Scene(border, 900, 700);
-        scene.setFill(Color.LIGHTGRAY);
+
+        // Move the buttons to a separate container below the menu bar
+        HBox buttonContainer = new HBox(15);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.setPadding(new Insets(20));
+        buttonContainer.setStyle("-fx-background-color: " + theme.accent + "; " +
+                               "-fx-background-radius: 10; " +
+                               "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+
+        Button btnSolve = createStyledButton("Solve");
+        Button btnSolveStep = createStyledButton("Solve Step by Step");
+        Button btnClear = createStyledButton("Clear");
+        buttonContainer.getChildren().addAll(btnSolve, btnSolveStep, btnClear);
+        
+        // Add the button container below the menu bar
+        topContainer.getChildren().add(buttonContainer);
+
+        // Apply theme after all components are initialized
+        applyTheme();
+
+        Scene scene = new Scene(border, 1000, 800);
+        scene.setFill(Color.web(theme.background));
         tfMaximumDepth.textProperty().addListener((observableValue, s, t1) -> {
             if (variables.solver instanceof DepthFirstSearch) {
                 int maxDepth = 2;
